@@ -3,7 +3,7 @@ function Rloophv=hypervolume(P,F)
     % F: a solution set found by a solver on a problem, An M x N matrix where each of the N columns represents a vector of
     % M objective function values.
 
-    % Approximation of Pareto set, P=paretofront(F);
+    % P: Approximation of Pareto set obtained by a slover for a problem
 
     % samples: The number of samples used for the Monte -Carlo approximation
     PP=P';
