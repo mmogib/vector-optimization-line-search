@@ -25,34 +25,15 @@ for ip = 1:numel(problems)
         fprintf('pid=%d (%s), run=%d, iters=%d, reason=%s\n', pid, pname, s, info.iters, info.reason);
     end
     % Metrics on the approximation set (self-referenced for demo)
-    hv = NaN; pur = NaN; gd = NaN; gd_aux = [];
-    try
-        if ~isempty(Pcols)
-            % Convert to rows = points (N x M) and deduplicate
-            Prows = unique(Pcols', 'rows');
-            % Hypervolume expects P as [N x M] and F as [M x N]
-            hv = hypervolume(Prows, Prows');
-            % Purity (self vs self against self)
-            try
-                pur_vec = purity(Prows, Prows, Prows);
-                if ~isempty(pur_vec), pur = pur_vec(1); end
-            catch
-                % leave as NaN
-            end
-            % Gamma/Delta (self-set placeholders)
-            try
-                [gd_vec, gd_aux] = Gamma_Delta(Prows, Prows, Prows, Prows);
-                if ~isempty(gd_vec), gd = gd_vec(1); end
-            catch
-                % leave as NaN
-            end
-        end
-    catch ME
-        warning('metrics failed for pid=%d: %s', pid, ME.message);
+    hv = NaN; pur = NaN; gd = NaN;
+    if ~isempty(Pcols)
+        Prows = unique(Pcols', 'rows');
+        m = compute_metrics(Prows);
+        hv = m.hv; pur = m.purity; gd = m.gamma_delta;
     end
     results(ip).id = pid; results(ip).name = pname;
     results(ip).P = Pcols; results(ip).F = Pcols; % alias for clarity
-    results(ip).runs = numStarts; results(ip).hv = hv; results(ip).purity = pur; results(ip).gamma_delta = gd; results(ip).gamma_delta_aux = gd_aux;
+    results(ip).runs = numStarts; results(ip).hv = hv; results(ip).purity = pur; results(ip).gamma_delta = gd;
 end
 
 disp('Summary (hypervolume over self-set):');
