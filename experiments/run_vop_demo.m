@@ -6,6 +6,9 @@ if exist('../full_run_log.txt', 'file'); delete('../full_run_log.txt'); end; dia
 addpath(genpath(fullfile('src')));
 addpath(genpath(fullfile('problems')));
 
+% Toggle recommended settings (sd+qwolfe) vs baseline (hz+dwolfe1)
+if ~exist('useRecommended','var'); useRecommended = true; end
+
 % Load problem registry for IDs, names, and default dimensions
 problems = registry();
 
@@ -19,7 +22,11 @@ for ip = 1:numel(problems)
     for s = 1:numStarts
         x0 = -1 + 2*rand(n,1);
         problem = struct('x0', x0, 'problemId', pid, 'm', 2);
-        opts = struct('direction','hz', 'linesearch','dwolfe1', 'maxIter',200, 'tol',1e-8);
+        if useRecommended
+            opts = struct('direction','sd', 'linesearch','qwolfe', 'maxIter',200, 'tol',1e-8);
+        else
+            opts = struct('direction','hz', 'linesearch','dwolfe1', 'maxIter',200, 'tol',1e-8);
+        end
         [x, F, info] = vop_solve(problem, opts);
         Pcols = [Pcols, F]; %#ok<AGROW>
         fprintf('pid=%d (%s), run=%d, iters=%d, reason=%s\n', pid, pname, s, info.iters, info.reason);

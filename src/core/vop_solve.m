@@ -46,8 +46,9 @@ verbose  = getfielddef(opts,'verbose',0);
 
 % Choose defaults by m
 if m == 2
-    directionName = getfielddef(opts,'direction','hz');
-    linesearchName = getfielddef(opts,'linesearch','dwolfe1');
+    % Recommended defaults from sweep: sd + qwolfe
+    directionName = getfielddef(opts,'direction','sd');
+    linesearchName = getfielddef(opts,'linesearch','qwolfe');
 elseif m == 3
     directionName = getfielddef(opts,'direction','sd'); % HZ/HZN (m=3) not implemented yet
     linesearchName = getfielddef(opts,'linesearch','dwolfe3');

@@ -18,15 +18,20 @@ This repository provides a unified MATLAB implementation of a line-search algori
 1) Add paths (from anywhere):
 - `run('<path-to-repo>/setup.m')` or in-repo `setup`
 - Persist: `setup persist`
-2) Solve a 2-objective problem with HZ + Wolfe:
+2) Solve a 2-objective problem (recommended defaults sd + qwolfe):
 - `p = registry(); p = p(1);`
 - `problem = struct('x0',randn(p.n,1),'problemId',p.id,'m',p.m);`
-- `opts = struct('direction','hz','linesearch','dwolfe1','maxIter',200,'tol',1e-8);`
+- `opts = struct('maxIter',200,'tol',1e-8);  % direction/linesearch default to sd+qwolfe`
 - `[x, F, info] = vop_solve(problem, opts);`
 3) Run the demo experiment:
 - `run('experiments/run_vop_demo.m')` (prints hypervolume, purity, gamma-delta)
 4) Run the sweep (optional):
 - `run('experiments/run_vop_sweep.m')`
+
+## Recommended Defaults
+- A sweep across directions {hz, sd, prp} and line-searches {dwolfe1, dwolfe2, qwolfe} shows `sd + qwolfe` performs robustly across problems.
+- HZ with qwolfe can be strong on some problems (requires Optimization Toolbox).
+- Demo can toggle baseline vs recommended via `useRecommended` at the top of `experiments/run_vop_demo.m`.
 
 ## Notes
 - The solver uses `f1/f2/f3` and `g1/g2/g3` to evaluate objectives/gradients by `problemId`; ensure `problems/data` is on the path (setup handles this).
