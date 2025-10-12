@@ -17,6 +17,7 @@
 - Lint example: `matlab -batch "checkcode('src/metrics/hypervolume.m')"`.
 - Run tests (if present): `matlab -batch "runtests"` or in-session `runtests('tests')`.
  - Demo experiment (m=2, HZ + Wolfe): `run('experiments/run_vop_demo.m')` (prints hv, purity, gamma-delta).
+ - Sweep experiment: `run('experiments/run_vop_sweep.m')` (compares directions/line-searches).
 
 ## Coding Style & Naming Conventions
 - One public function per `.m` file. File name must match the function name.
@@ -41,16 +42,20 @@
 - Ensure scripts can run non-interactively (compatible with `-batch`).
 
 ## Usage Example
-Run a 2-objective HZ + Wolfe solve on problem `d=1`:
+Run a 2-objective solve with recommended defaults (sd + qwolfe):
 
 ```matlab
 setup  % or run('<repo>/setup.m')
 reg = registry(); p = reg(1);
 problem = struct('x0', randn(p.n,1), 'problemId', p.id, 'm', p.m);
-opts = struct('direction','hz', 'linesearch','dwolfe1', 'maxIter',200, 'tol',1e-8);
+opts = struct('maxIter',200, 'tol',1e-8); % defaults to sd + qwolfe
 [x, F, info] = vop_solve(problem, opts);
 disp(F); disp(info.reason);
 ```
+
+## Recommended Defaults
+- Direction: `sd`; Line-search: `qwolfe` for m=2.
+- Alternative: `hz` + `qwolfe` (requires Optimization Toolbox) can perform well on some problems.
 
 ## Phase 0: Inventory Summary
 - One solver concept with multiple search directions (HZ, HZN, PRP/PRP1, SD) and line-search strategies (Wolfe, quadratic Wolfe, Zoom variants). Code is split by objective count, causing duplication.

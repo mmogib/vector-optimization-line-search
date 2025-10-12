@@ -31,7 +31,16 @@ This repository provides a unified MATLAB implementation of a line-search algori
 ## Recommended Defaults
 - A sweep across directions {hz, sd, prp} and line-searches {dwolfe1, dwolfe2, qwolfe} shows `sd + qwolfe` performs robustly across problems.
 - HZ with qwolfe can be strong on some problems (requires Optimization Toolbox).
-- Demo can toggle baseline vs recommended via `useRecommended` at the top of `experiments/run_vop_demo.m`.
+- Demo toggles baseline vs recommended via `useRecommended` at the top of `experiments/run_vop_demo.m`.
+
+### Sample Demo Summary (sd + qwolfe)
+```
+pid=1 (P1): hv=0.4869, purity=1.0000, gamma-delta=14.26, avg-iters=1.00, runs=5
+pid=2 (P2): hv=0.2334, purity=1.0000, gamma-delta=8.406, avg-iters=1.20, runs=5
+pid=5 (P5): hv=0.5111, purity=1.0000, gamma-delta=0.6179, avg-iters=5.80, runs=5
+pid=6 (P6): hv=0.2708, purity=1.0000, gamma-delta=0.03246, avg-iters=2.80, runs=5
+pid=10 (P10): hv=0.3954, purity=1.0000, gamma-delta=4.916, avg-iters=4.80, runs=5
+```
 
 ## Notes
 - The solver uses `f1/f2/f3` and `g1/g2/g3` to evaluate objectives/gradients by `problemId`; ensure `problems/data` is on the path (setup handles this).

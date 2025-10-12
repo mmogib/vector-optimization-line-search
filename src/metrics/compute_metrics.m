@@ -1,6 +1,7 @@
-function out = compute_metrics(Prows)
+function out = compute_metrics(Prows, Pref)
 % compute_metrics  Compute hv, purity, gamma-delta with safe guards.
 %   Prows: N x M (rows = points, cols = objectives)
+%   Pref (optional): reference front rows (rows=points, cols=objectives)
 %   Returns struct with fields: hv, purity, gamma_delta
 
 out = struct('hv', NaN, 'purity', NaN, 'gamma_delta', NaN);
@@ -12,16 +13,22 @@ end
 % Deduplicate
 Prows = unique(Prows, 'rows');
 
+if nargin < 2 || isempty(Pref)
+    Pref = Prows;
+else
+    Pref = unique(Pref, 'rows');
+end
+
 % Hypervolume expects P [N x M] and F [M x N]
 try
-    out.hv = hypervolume(Prows, Prows');
+    out.hv = hypervolume(Prows, Pref');
 catch
     % leave as NaN
 end
 
 % Purity and Gamma-Delta (use self-set as placeholder reference)
 try
-    pv = purity(Prows, Prows, Prows);
+    pv = purity(Prows, Prows, Pref);
     if ~isempty(pv)
         out.purity = pv(1);
     end
@@ -30,7 +37,7 @@ catch
 end
 
 try
-    [gdv, ~] = Gamma_Delta(Prows, Prows, Prows, Prows);
+    [gdv, ~] = Gamma_Delta(Prows, Prows, Pref, Pref);
     if ~isempty(gdv)
         out.gamma_delta = gdv(1);
     end
@@ -39,4 +46,3 @@ catch
 end
 
 end
-
