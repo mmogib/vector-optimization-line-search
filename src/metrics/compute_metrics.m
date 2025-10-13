@@ -28,7 +28,9 @@ end
 
 % Purity and Gamma-Delta (use self-set as placeholder reference)
 try
-    pv = purity(Prows, Prows, Pref);
+    % Use absolute+relative tolerance to reduce false no-matches in purity
+    % atol=1e-6, rtol=5e-2 (scaled by reference front range per objective)
+    pv = purity(Prows, Prows, Pref, 1e-6, 5e-2);
     if ~isempty(pv)
         out.purity = pv(1);
     end

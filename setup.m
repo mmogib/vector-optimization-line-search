@@ -1,4 +1,3 @@
-if exist('full_run_log.txt', 'file'); delete('full_run_log.txt'); end; diary('full_run_log.txt');
 fprintf('=== Log file created: %s ===\n', fullfile(pwd, 'full_run_log.txt'));
 
 fprintf('=== Run started: %s ===\n', datetime('now'));
@@ -10,7 +9,6 @@ catch ME
 end
 
 fprintf('=== Run ended: %s ===\n', datetime('now'));
-diary off
 
 
 function setup_(varargin)
@@ -29,6 +27,7 @@ dirs = {
     fullfile(root, 'problems')
     fullfile(root, 'experiments')
     fullfile(root, 'tests')
+    % fullfile(root,'logs')
 };
 
 added = {};

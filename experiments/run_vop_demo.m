@@ -2,7 +2,7 @@
 % Generates a small approximation set via multiple restarts and reports metrics.
 
 clear; clc;
-if exist('../full_run_log.txt', 'file'); delete('../full_run_log.txt'); end; diary('../full_run_log.txt');
+if exist('../logs/demo_log.txt', 'file'); delete('../logs/demo_log.txt'); end; diary('../logs/demo_log.txt');
 addpath(genpath(fullfile('src')));
 addpath(genpath(fullfile('problems')));
 
@@ -19,8 +19,10 @@ results = struct('id',{},'name',{},'P',{},'F',{},'runs',{},'hv',{});
 for ip = 1:numel(problems)
     pid = problems(ip).id; n = problems(ip).n; pname = problems(ip).name;
     Pcols = []; iters_list = []; % columns are objective vectors (M x N)
+    X0s = zeros(n, numStarts);
     for s = 1:numStarts
         x0 = -1 + 2*rand(n,1);
+        X0s(:,s) = x0;
         problem = struct('x0', x0, 'problemId', pid, 'm', 2);
         if useRecommended
             opts = struct('direction','sd', 'linesearch','qwolfe', 'maxIter',200, 'tol',1e-8);
@@ -40,7 +42,9 @@ for ip = 1:numel(problems)
         useReference = true; refStarts = 5;
         if useReference
             baseProb = struct('x0', zeros(n,1), 'problemId', pid, 'm', 2);
-            Pref = build_reference_front(baseProb, struct('direction','sd','linesearch','qwolfe','maxIter',200,'tol',1e-8), refStarts);
+            % Seed reference with the same starts for overlap, plus extras
+            ropts = struct('direction','sd','linesearch','qwolfe','maxIter',200,'tol',1e-8,'cache',false,'x0_list',X0s,'seed',1);
+            Pref = build_reference_front(baseProb, ropts, refStarts);
         else
             Pref = [];
         end
