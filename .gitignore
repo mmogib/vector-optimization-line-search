@@ -1,0 +1,13 @@
+# Local run logs and session notes
+full_run_log.txt
+NEXT_PROMPT.md
+
+# MATLAB temporary/autosave files
+*.asv
+*.m~
+
+# OS/editor junk
+.DS_Store
+.idea/
+.vscode/
+
