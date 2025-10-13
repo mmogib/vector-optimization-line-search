@@ -1,6 +1,7 @@
 # Local run logs and session notes
 full_run_log.txt
-NEXT_PROMPT.md
+# NEXT_PROMPT.md is committed as the kickoff plan for the next session
+# (remove from ignore to allow tracking)
 *.log
 logs/*.txt
 

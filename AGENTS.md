@@ -76,7 +76,7 @@ Immediate path forward
 - Next, extract directions and line-search into function APIs under `src/*` and leave thin experiment scripts under `experiments/`.
 
 ## Plan
-Refactor Plan for VOP Line-Search Repository
+Refactor Plan for VOP Line-Search Repository (live)
 
 Checklist (authoritative)
 
@@ -95,12 +95,19 @@ Checklist (authoritative)
   - [x] Metrics relocated to `src/metrics/`.
 
 - [ ] Phase 3 — Migration & Cleanup
+  - [x] Introduce unified problem dispatcher (`problem_dispatcher.m`).
+  - [x] Wire solver and HZ subproblem to dispatcher; refactor `qwolfe` to use it (m=2).
+  - [x] Deduplicate TE8/FDS via family wrappers (`te8_f/g`, `fds_f/g`) and delegate from `f*/g*`.
+  - [ ] Convert remaining m=2 line-search internals (`dwolfe1_2obj`, `dwolfe2_2obj`, zoom variants) to use dispatcher.
+  - [ ] Remove legacy direct calls to `f1/f2/f3` and `g1/g2/g3` once all call sites use dispatcher.
   - [ ] Remove legacy duplicates under `vector_optimization/*` (keep `.mat` datasets).
-  - [ ] Consolidate problems under `problems/` (functions + data folders).
-  - [ ] Optional: add problem registry (IDs → metadata) for clarity.
+  - [ ] Consolidate problems under `problems/` (functions + data folders) with family wrappers.
+  - [ ] Optional: expand problem registry (IDs → metadata, refs/domains).
 
 - [ ] Phase 4 — Validation
-  - [ ] Run experiments and compare key metrics (hypervolume, purity, Gamma/Delta).
+  - [x] Demo and sweep run with logging (`logs/*.txt` ignored). Purity robustness improved (relative tol, overlap).
+  - [x] HZ tuning sweep added (`experiments/run_hz_tuning.m`) with logs and summarizer.
+  - [ ] Re-run after dispatcher migration; compare hv/purity/gamma-delta vs prior logs.
   - [ ] Document any intentional changes.
 
 - [ ] Phase 5 — Docs & Examples
@@ -132,6 +139,12 @@ Checklist (authoritative)
 
 - Phase 5 — Cleanup & Docs
   - Remove shims after callers are updated. Refresh AGENTS.md and usage examples.
+
+Notes this session
+- Metrics: `purity.m` now tolerance-based (abs+relative), `compute_metrics` calls purity with rtol=5e-2.
+- Reference fronts: caching enabled in `build_reference_front` with `problems/ref/` and seeded overlap for demo.
+- Logs: use `logs/` (tracked via `.gitkeep`); all `*.log` and `logs/*.txt` are git-ignored.
+- Dispatcher introduced and partially adopted (solver, HZ subproblem, `qwolfe`).
 
 Open Questions (to confirm before executing)
 - MATLAB version support and whether Octave is required.
