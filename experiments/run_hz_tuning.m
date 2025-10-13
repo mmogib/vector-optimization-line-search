@@ -3,7 +3,7 @@
 % Logs hv and avg iters deltas vs baseline per (problem, linesearch).
 
 clear; clc;
-logdir = fullfile('logs'); if ~exist(logdir,'dir'), mkdir(logdir); end
+logdir = fullfile('../logs'); if ~exist(logdir,'dir'), mkdir(logdir); end
 logpath = fullfile(logdir, 'hz_tuning_log.txt');
 if exist(logpath, 'file'); delete(logpath); end; diary(logpath);
 

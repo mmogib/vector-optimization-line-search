@@ -1,8 +1,7 @@
 # Local run logs and session notes
 full_run_log.txt
 NEXT_PROMPT.md
-logs/
-problems/ref/
+*.log
 
 # MATLAB temporary/autosave files
 *.asv
