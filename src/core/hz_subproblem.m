@@ -7,8 +7,11 @@ function [v, fval, out] = hz_subproblem(x, problemId, r1, r2)
 %   where z = [z1; v], returning v and objective value fval.
 
 if nargin < 4, error('hz_subproblem:NotEnoughInputs','Need x, problemId, r1, r2'); end
-g1x = g1(x, problemId);
-g2x = g2(x, problemId);
+% Use unified dispatcher for gradients
+[~, Gfun] = problem_dispatcher(problemId, 2);
+Gs = Gfun(x);
+g1x = Gs{1};
+g2x = Gs{2};
 n = numel(x);
 
 % Fallback if gradients contain non-finite values

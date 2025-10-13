@@ -39,6 +39,8 @@ if ~isfield(problem,'m')
 end
 m = problem.m;
 
+% Unified problem API for this problemId
+[Ffun, Gfun] = problem_dispatcher(dId, m);
 maxIter  = getfielddef(opts,'maxIter',500);
 tol      = getfielddef(opts,'tol',1e-8);
 alphamax = getfielddef(opts,'alphamax',1e10);
@@ -64,7 +66,7 @@ else
 end
 
 % Initial evals
-[Fvals, grads] = eval_FG(x, dId, m);
+[Fvals, grads] = eval_FG(x);
 nf = m; ng = m;
 
 % Initialize
@@ -174,7 +176,7 @@ for k = 1:maxIter
     for i=2:m, history.grad_prev = history.grad_prev + grads{i}*r(i); end
 
     x = x_new;
-    [Fvals, grads] = eval_FG(x, dId, m);
+    [Fvals, grads] = eval_FG(x);
     nf = nf + m; ng = ng + m;
 
     % HZ/HZN adaptive direction update for next iteration
@@ -186,9 +188,9 @@ for k = 1:maxIter
 
         % Values at previous x
         vk_prev    = history.v_prev;
-        fxkdk      = max([r(1)*history.grad_prev'*dvec, r(2)*(g2(x - alpha*dvec, dId))'*dvec]); % will recompute below properly
+        fxkdk      = NaN; % will recompute below properly
         % Recompute grads at previous x explicitly (grads_prev)
-        [~, grads_prev] = eval_FG(x - alpha*dvec, dId, m);
+        [~, grads_prev] = eval_FG(x - alpha*dvec);
         fxkdk = max([r(1)*grads_prev{1}'*dvec, r(2)*grads_prev{2}'*dvec]);
 
         % v at new x
@@ -260,28 +262,22 @@ end
 end
 
 function r = compute_scaling(x, dId, m)
-% Compute r_i = 1 / max(1, ||g_i||_inf) at x
-gs = cell(1,m);
-gs{1} = g1(x, dId);
-if m >= 2, gs{2} = g2(x, dId); end
-if m >= 3, gs{3} = g3(x, dId); end
-r = zeros(1,m);
-for i=1:m
+% Compute r_i = 1 / max(1, ||g_i||_inf) at x via dispatcher
+[~, Gfun_loc] = problem_dispatcher(dId, m);
+gs = Gfun_loc(x);
+r = zeros(1, numel(gs));
+for i=1:numel(gs)
     r(i) = 1 / max(1, norm(gs{i}, inf));
+end
+if numel(r) < m
+    r(numel(r)+1:m) = 1;
 end
 end
 
-function [Fvals, grads] = eval_FG(x, dId, m)
-% Evaluate objective values and gradients (raw, unscaled)
-F = zeros(m,1);
-F(1) = f1(x, dId);
-if m >= 2, F(2) = f2(x, dId); end
-if m >= 3, F(3) = f3(x, dId); end
-G = cell(1,m);
-G{1} = g1(x, dId);
-if m >= 2, G{2} = g2(x, dId); end
-if m >= 3, G{3} = g3(x, dId); end
-Fvals = F; grads = G;
+function [Fvals, grads] = eval_FG(x)
+% Evaluate objective values and gradients via unified API (raw, unscaled)
+Fvals = Ffun(x);
+grads = Gfun(x);
 end
 
 function v = getfielddef(s, name, default)
