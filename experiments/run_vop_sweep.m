@@ -2,7 +2,7 @@
 % Logs summary metrics per (problem, direction, linesearch).
 
 clear; clc;
-if exist('../full_run_log.txt', 'file'); delete('../full_run_log.txt'); end; diary('../full_run_log.txt');
+if exist('../logs/sweep_log.txt', 'file'); delete('../logs/sweep_log.txt'); end; diary('../logs/sweep_log.txt');
 
 addpath(genpath(fullfile('src')));
 addpath(genpath(fullfile('problems')));
