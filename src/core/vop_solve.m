@@ -124,6 +124,9 @@ for k = 1:maxIter
     % Linesearch selection
     lsopts = struct('alphamax',alphamax,'problemId',dId);
     for i=1:m, lsopts.(sprintf('r%d',i)) = r(i); end
+    % Pass-through Wolfe constants if provided in opts
+    if isfield(opts,'rhoba') && ~isempty(opts.rhoba), lsopts.rhoba = opts.rhoba; end
+    if isfield(opts,'sigmaba') && ~isempty(opts.sigmaba), lsopts.sigmaba = opts.sigmaba; end
 
     switch lower(linesearchName)
         case 'dwolfe1'
