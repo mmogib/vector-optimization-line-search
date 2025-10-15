@@ -13,3 +13,11 @@ logs/*.txt
 .DS_Store
 .idea/
 .vscode/
+
+# Outputs: keep folder structure, ignore artifacts
+/outputs/*
+!/outputs/.gitkeep
+/outputs/performance/*
+!/outputs/performance/.gitkeep
+/outputs/runs/*
+!/outputs/runs/.gitkeep
