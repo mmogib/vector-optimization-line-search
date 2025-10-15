@@ -1,4 +1,5 @@
 %% HZ parameter tuning sweep for m=2
+% Refactored by: Dr. Mohammed Alshahrani
 % Sweeps over hz_mu, hz_c, hz_ita and Wolfe constants (rhoba=c1, sigmaba=c2).
 % Logs hv and avg iters deltas vs baseline per (problem, linesearch).
 
@@ -11,6 +12,9 @@ addpath(genpath(fullfile('src')));
 addpath(genpath(fullfile('problems')));
 
 problems = registry();
+% Limit HZ tuning to IKK1 only for speed/meaningful hv
+mask = ismember({problems.name}, {'IKK1'});
+problems = problems(mask);
 
 % Grids
 hz_mu_grid  = [0.5, 1, 2];
@@ -27,17 +31,17 @@ numStarts = 3; rng(0);
 fprintf('HZ tuning start: %s\n', datestr(now));
 
 for ip = 1:numel(problems)
-    pid = problems(ip).id; n = problems(ip).n; pname = problems(ip).name;
+    pname = problems(ip).name; n = problems(ip).n;
     for ils = 1:numel(lss)
         lsName = lss{ils};
 
         % Baseline with default HZ params and default Wolfe constants
-        base_opts = struct('direction','hz', 'linesearch',lsName, 'maxIter',200, 'tol',1e-8);
+        base_opts = struct('direction','hz', 'linesearch',lsName, 'maxIter',300, 'tol',1e-8, 'gradTol',1e-4);
         if any(strcmp(lsName, {'dwolfe1','dwolfe2'}))
             % Defaults in wrappers: rhoba=1e-4, sigmaba=0.9
         end
-        [base_hv, base_avg] = eval_cfg(pid, n, base_opts, numStarts);
-        fprintf('pid=%d(%s) %s BASE: hv=%.4g avg-iters=%.2f\n', pid, pname, lsName, base_hv, base_avg);
+        [base_hv, base_avg] = eval_cfg(pname, n, base_opts, numStarts);
+        fprintf('pid=(%s) %s BASE: hv=%.4g avg-iters=%.2f\n', pname, lsName, base_hv, base_avg);
 
         for mu = hz_mu_grid
             for cc = hz_c_grid
@@ -48,17 +52,17 @@ for ip = 1:numel(problems)
                                 tun_opts = base_opts;
                                 tun_opts.hz_mu = mu; tun_opts.hz_c = cc; tun_opts.hz_ita = ita;
                                 tun_opts.rhoba = c1; tun_opts.sigmaba = c2;
-                                [hv, avg] = eval_cfg(pid, n, tun_opts, numStarts);
-                                fprintf('pid=%d(%s) %s mu=%.2g c=%.2g ita=%.1e c1=%.0e c2=%.1f: hv=%.4g (d=%.4g) avg=%.2f (d=%.2f)\n', ...
-                                    pid, pname, lsName, mu, cc, ita, c1, c2, hv, hv-base_hv, avg, avg-base_avg);
+                                [hv, avg] = eval_cfg(pname, n, tun_opts, numStarts);
+                                fprintf('pid=(%s) %s mu=%.2g c=%.2g ita=%.1e c1=%.0e c2=%.1f: hv=%.4g (d=%.4g) avg=%.2f (d=%.2f)\n', ...
+                                    pname, lsName, mu, cc, ita, c1, c2, hv, hv-base_hv, avg, avg-base_avg);
                             end
                         end
                     else
                         tun_opts = base_opts;
                         tun_opts.hz_mu = mu; tun_opts.hz_c = cc; tun_opts.hz_ita = ita;
-                        [hv, avg] = eval_cfg(pid, n, tun_opts, numStarts);
-                        fprintf('pid=%d(%s) %s mu=%.2g c=%.2g ita=%.1e: hv=%.4g (d=%.4g) avg=%.2f (d=%.2f)\n', ...
-                            pid, pname, lsName, mu, cc, ita, hv, hv-base_hv, avg, avg-base_avg);
+                        [hv, avg] = eval_cfg(pname, n, tun_opts, numStarts);
+                        fprintf('pid=(%s) %s mu=%.2g c=%.2g ita=%.1e: hv=%.4g (d=%.4g) avg=%.2f (d=%.2f)\n', ...
+                            pname, lsName, mu, cc, ita, hv, hv-base_hv, avg, avg-base_avg);
                     end
                 end
             end
@@ -69,12 +73,12 @@ end
 fprintf('HZ tuning end: %s\n', datestr(now));
 diary off
 
-function [hv, avg_iters] = eval_cfg(pid, n, opts, numStarts)
+function [hv, avg_iters] = eval_cfg(pname, n, opts, numStarts)
 % Helper to run numStarts restarts and compute hv and avg iters
     Pcols = []; iters_list = [];
     for s = 1:numStarts
         x0 = -1 + 2*rand(n,1);
-        problem = struct('x0', x0, 'problemId', pid, 'm', 2);
+        problem = struct('x0', x0, 'name', pname, 'm', 2);
         try
             [x, F, info] = vop_solve(problem, opts); %#ok<ASGLU>
             Pcols = [Pcols, F]; %#ok<AGROW>
@@ -91,4 +95,3 @@ function [hv, avg_iters] = eval_cfg(pid, n, opts, numStarts)
     hv = m.hv;
     if isempty(iters_list), avg_iters = NaN; else, avg_iters = mean(iters_list); end
 end
-

@@ -1,5 +1,6 @@
 function Rloopps = purity(P1, P2, P3, tol_or_atol, rtol)
 % purity  Purity vs. reference front using absolute+relative tolerances.
+%   Refactored by: Dr. Mohammed Alshahrani
 %   R = purity(P1, P2, P3, tol_or_atol, rtol)
 %   - P1, P2: approximation sets (rows = points, cols = objectives)
 %   - P3: reference front (rows = points, cols = objectives)
@@ -23,9 +24,9 @@ function Rloopps = purity(P1, P2, P3, tol_or_atol, rtol)
   default_atol = 1e-6;   % absolute floor
   default_rtol = 1e-3;   % scales with objective range
 
-  if nargin < 4 || isempty(tol_or_atol)
+  if nargin < 4 || (numel(tol_or_atol)==0)
     atol = default_atol; rtol = default_rtol;
-  elseif nargin < 5 || isempty(rtol)
+  elseif nargin < 5 || (numel(rtol)==0)
     atol = tol_or_atol;  rtol = 0; % pure absolute tolerance
   else
     atol = tol_or_atol;
@@ -33,12 +34,12 @@ function Rloopps = purity(P1, P2, P3, tol_or_atol, rtol)
   end
 
   % Normalize inputs and deduplicate rows
-  if isempty(P3)
+  if (numel(P3)==0)
     Rloopps = [NaN NaN];
     return
   end
-  if isempty(P1), P1 = zeros(0, size(P3,2)); end
-  if isempty(P2), P2 = zeros(0, size(P3,2)); end
+  if (numel(P1)==0), P1 = zeros(0, size(P3,2)); end
+  if (numel(P2)==0), P2 = zeros(0, size(P3,2)); end
 
   P1 = unique(P1, 'rows');
   P2 = unique(P2, 'rows');
@@ -67,7 +68,7 @@ end
 function c = rows_matched_count(A, B, tol_vec)
 % rows_matched_count  Count rows in B with at least one match in A within tol_vec.
 %   Match if all per-dimension absolute diffs <= tol_j.
-  if isempty(A) || isempty(B)
+  if (numel(A)==0) || (numel(B)==0)
     c = 0; return
   end
   c = 0;

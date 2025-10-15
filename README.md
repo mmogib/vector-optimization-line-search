@@ -4,7 +4,7 @@ This repository provides a unified MATLAB implementation of a line-search algori
 
 ## Structure
 - `src/core/` — Solver and shared utilities (`vop_solve.m`, `hz_subproblem.m`).
-- `src/directions/` — Search directions (`direction_hz.m`, `direction_hzn.m`, `direction_prp.m`, `direction_sd.m`).
+- `src/directions/` — Search directions (`direction_hz.m`, `direction_prp.m`, `direction_sd.m`).
 - `src/linesearch/` — Line-search wrappers (Wolfe, qWolfe, Zoom variants).
 - `src/metrics/` — Metrics (hypervolume, purity, Gamma/Delta, Performance).
 - `problems/` — Problem wrappers (`f1/f2/f3.m`, `g1/g2/g3.m`).
@@ -43,10 +43,12 @@ pid=10 (P10): hv=0.3954, purity=1.0000, gamma-delta=4.916, avg-iters=4.80, runs=
 ```
 
 ## Notes
-- The solver uses `f1/f2/f3` and `g1/g2/g3` to evaluate objectives/gradients by `problemId`; ensure `problems/data` is on the path (setup handles this).
-- HZ/HZN use a quadratic subproblem for direction and an adaptive update inside the solver.
+- Evaluation uses the unified dispatcher via problem names (preferred) or legacy `problemId`:
+  - `Ffun(x)` returns an m×1 vector; `Gfun(x)` returns a 1×m cell of gradients.
+  - Legacy `f1/f2/f3` and `g1/g2/g3` have been removed. Use named problems (e.g., `IKK1`, `TE8`, `MOP5`) via `problem.name`.
+- HZ uses a quadratic subproblem for direction and an adaptive update integrated into the direction function.
 - Legacy `vector_optimization/*` scripts are deprecated and not used.
-- HZ/HZN require Optimization Toolbox (`quadprog`).
+- HZ requires Optimization Toolbox (`quadprog`).
 
 ## Contributing
 See `AGENTS.md` for guidelines, coding style, and the migration plan checklist.

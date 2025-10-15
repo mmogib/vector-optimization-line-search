@@ -1,9 +1,10 @@
 function Nd = nondominated_rows(P)
 % nondominated_rows  Return nondominated subset of rows (assume minimization).
+%   Refactored by: Dr. Mohammed Alshahrani
 %   P: N x M matrix, rows are objective vectors.
 %   Nd: K x M nondominated rows.
 
-if isempty(P)
+if (numel(P)==0)
     Nd = P; return;
 end
 
@@ -24,4 +25,3 @@ end
 Nd = P(keep,:);
 
 end
-

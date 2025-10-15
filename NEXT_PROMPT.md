@@ -1,31 +1,28 @@
-# Kickoff Prompt: Next Session
+﻿# Kickoff Prompt: Next Session
 
 Context
-- Unified problem API introduced via `src/core/problem_dispatcher.m`.
-- Solver (`vop_solve`) and `hz_subproblem` now evaluate F/G through dispatcher; `qwolfe` refactored to use it (m=2).
-- TE8 and FDS are consolidated as family wrappers (`problems/te8_f/g.m`, `problems/fds_f/g.m`).
-- Legacy `f1/f2/f3` and `g1/g2/g3` delegate TE8/FDS to the new wrappers.
-- Metrics robustness improved: `purity` uses abs+relative tolerance; reference fronts cache in `problems/ref/`.
-- Logs are under `logs/` (ignored); demos/sweeps/tuning are validated locally.
+- Dispatcher-based F/G with params is stable; vop_solve uses unified direction and line-search APIs.
+- Directions: SD/PRP/HZ unified; HZ adaptive update now lives inside `direction_hz` and passes history back to the solver.
+- Line-searches: DWOLFE and QWOLFE are unified with documented wrappers; all legacy zoom/dwolfe variants removed.
+- Experiments target the P-set (IKK1/TE8/MOP5/MOP7/SLCDT2); HZ + Wolfe settings converge decisively. Logs are under `logs/` (ignored).
 
 Goals for this session
-1) Remove Legacy API (m=2 path, no behavior change)
-   - Refactor `dwolfe1_2obj.m` and `dwolfe2_2obj.m` (and their zoom helpers) to use dispatcher (no direct `f1/g1` calls).
-   - Verify `qwolfe` path remains stable on the demo and sweep problems (hv/purity/gamma-delta reasonable).
+1) Polish Directions
+   - Confirm/document HZ defaults in code/comments (hz_mu=1, hz_c=0.2, hz_ita=1e-2).
+   - Add PRP+ niceties: beta capping (e.g., min(beta, 10)) and optional restart hook.
 
-2) Expand Problem Families
-   - Add `VU1_f/g` wrappers with references/domains; map in dispatcher when applicable.
-   - Optionally add `SP1_f/g` in the same style.
+2) Improve Demo/Sweep UX & Metrics
+   - Add optional hv booster: collect intermediate F every K iterations (e.g., K=5) via a solver option (recordIntermediateEvery).
+   - Tidy metric printing for tiny sets (avoid purity=Inf/NaN formatting surprises).
 
-3) Registry
-   - Extend `problems/registry.m` with selected present datasets from refs/problems.tex (BK1, VU1, SP1, etc.) including notes.
+3) Final Pass
+   - Ensure consistent headers and “Refactored by: Dr. Mohammed Alshahrani” across src/directions and src/linesearch.
+   - Confirm demo/sweep/hz_tuning remain -batch friendly and documented.
 
-4) Validation
-   - Re-run `experiments/run_vop_demo.m` and `experiments/run_vop_sweep.m`; compare hv/purity/gamma-delta vs prior logs.
-   - Summarize any notable changes.
+Suggested Next Steps
+- Implement PRP+ beta capping and optional restart.
+- Add recordIntermediateEvery to vop_solve, wire into demo option for optional hv boost.
+- Refine metric printing for small sets and re-run demo/sweep; summarize diffs.
 
-Instructions
-- Work on branch `refactoring` and keep changes incremental.
-- Use dispatcher for any new code that needs F/G; avoid adding new callsites of legacy `f*/g*`.
-- Keep `G` as a 1×m cell array; `F` as m×1.
-- Keep logs out of git; use `logs/*.txt` locally.
+Notes
+- Core consolidation (dispatcher, linesearch, directions) is complete; remaining tasks are polish and optional UX improvements.

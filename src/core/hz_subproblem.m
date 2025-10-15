@@ -1,14 +1,16 @@
-function [v, fval, out] = hz_subproblem(x, problemId, r1, r2)
-% hz_subproblem  Solve HZ/HZN quadratic subproblem to get v-direction.
-%   [v, fval, out] = hz_subproblem(x, problemId, r1, r2)
+function [v, fval, out] = hz_subproblem(x, problemId, r1, r2, params)
+% hz_subproblem  Solve HZ quadratic subproblem to get v-direction.
+%   Refactored by: Dr. Mohammed Alshahrani
+%   [v, fval, out] = hz_subproblem(x, problemId, r1, r2, params)
 %   Solves:
 %     min  e1' * z  subject to  -z1 + r1*g1(x,problemId)'*z2..n+1 <= 0
 %                                  -z1 + r2*g2(x,problemId)'*z2..n+1 <= 0
 %   where z = [z1; v], returning v and objective value fval.
 
 if nargin < 4, error('hz_subproblem:NotEnoughInputs','Need x, problemId, r1, r2'); end
+if nargin < 5, params = struct(); end
 % Use unified dispatcher for gradients
-[~, Gfun] = problem_dispatcher(problemId, 2);
+[~, Gfun] = problem_dispatcher(problemId, 2, params);
 Gs = Gfun(x);
 g1x = Gs{1};
 g2x = Gs{2};

@@ -1,19 +1,20 @@
 function out = compute_metrics(Prows, Pref)
 % compute_metrics  Compute hv, purity, gamma-delta with safe guards.
+%   Refactored by: Dr. Mohammed Alshahrani
 %   Prows: N x M (rows = points, cols = objectives)
 %   Pref (optional): reference front rows (rows=points, cols=objectives)
 %   Returns struct with fields: hv, purity, gamma_delta
 
 out = struct('hv', NaN, 'purity', NaN, 'gamma_delta', NaN);
 
-if nargin < 1 || isempty(Prows) || size(Prows,2) < 2
+if nargin < 1 || (numel(Prows)==0) || size(Prows,2) < 2
     return
 end
 
 % Deduplicate
 Prows = unique(Prows, 'rows');
 
-if nargin < 2 || isempty(Pref)
+if nargin < 2 || (numel(Pref)==0)
     Pref = Prows;
 else
     Pref = unique(Pref, 'rows');
@@ -31,7 +32,7 @@ try
     % Use absolute+relative tolerance to reduce false no-matches in purity
     % atol=1e-6, rtol=5e-2 (scaled by reference front range per objective)
     pv = purity(Prows, Prows, Pref, 1e-6, 5e-2);
-    if ~isempty(pv)
+    if ~(numel(pv)==0)
         out.purity = pv(1);
     end
 catch
@@ -40,7 +41,7 @@ end
 
 try
     [gdv, ~] = Gamma_Delta(Prows, Prows, Pref, Pref);
-    if ~isempty(gdv)
+    if ~(numel(gdv)==0)
         out.gamma_delta = gdv(1);
     end
 catch
