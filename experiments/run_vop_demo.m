@@ -15,10 +15,19 @@ if ~exist('recordEvery','var'); recordEvery = 5; end
 
 % Load problem registry for IDs, names, and default dimensions
 problems = registry();
-% Restrict to P1/P2/P5/P6/P10 equivalents: IKK1, TE8, MOP5, MOP7, SLCDT2
-keep = {'IKK1','TE8','MOP5','MOP7','SLCDT2'};
-mask = ismember({problems.name}, keep);
-problems = problems(mask);
+% Allow user override via workspace variable `problems` (cellstr of names)
+if evalin('base','exist(''problems'',''var'')')
+  userList = evalin('base','problems');
+  if iscell(userList) && ~isempty(userList)
+    mask = ismember({problems.name}, userList);
+    problems = problems(mask);
+  end
+else
+  % Default P-set subset
+  keep = {'IKK1','TE8','MOP5','MOP7','SLCDT2'};
+  mask = ismember({problems.name}, keep);
+  problems = problems(mask);
+end
 
 baseStarts = 5; rng(0);
 

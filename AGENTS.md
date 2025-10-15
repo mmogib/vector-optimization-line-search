@@ -1,5 +1,27 @@
 # Repository Guidelines
 
+## Session Summary (Oct 2025)
+- Directions unified and hardened:
+  - Removed HZN; `direction_hzn` deleted, solver accepts `hz|sd|prp` only.
+  - HZ adaptive update made robust to environment (no reliance on shadowed builtins like `isempty`/`iscell`).
+  - PRP+ niceties: beta capping and optional restart supported.
+- Line-searches consolidated:
+  - Unified DWOLFE and QWOLFE wrappers (`src/linesearch/*`), NaN/empty-safe options handling.
+  - Zoom and duplicate legacy variants removed.
+- Solver improvements:
+  - `recordIntermediateEvery` option for collecting intermediate objective vectors.
+  - Tuned sd + qwolfe defaults wired in demo/sweep; HZ defaults documented (mu=1, c=0.2, ita=1e-2).
+- Metrics & profiling:
+  - New plotting utilities: `plot_performance_profile.m` and `plot_performance_profiles.m`.
+  - CSV pipeline: `run_save_results.m` (writes versioned CSVs), `load_performance_from_csv.m`, and `plot_profiles_from_csv.m`.
+  - Removed legacy `Performance.m` and unused `dominates.m`.
+- Experiments:
+  - Added `run_performance_profiles.m` (inline) and `run_direction_sanity.m` (quick direction smoke test).
+  - All experiments save artifacts under `outputs/performance/` and logs under `logs/`.
+- Outputs policy:
+  - `outputs/` folder is tracked with `.gitkeep` only; artifacts are git‑ignored.
+  - New files written to `outputs/performance/` and `outputs/runs/` are not committed.
+
 ## Project Structure & Module Organization
 - New source lives under `src/`:
   - `src/core/` (shared utilities; e.g., `hz_subproblem.m`)
@@ -10,7 +32,7 @@
 - Problems consolidated under `problems/`:
   - `problems/` contains problem wrappers (`f1/f2/f3.m`, `g1/g2/g3.m`).
   - `problems/data/` contains all datasets (`.mat`). Ensure this folder is on the MATLAB path.
-  - `problems/registry.m` lists available problem IDs, names, and default dimensions.
+ - `problems/registry.m` lists available problem IDs, names, and default dimensions.
  - Documentation lives under `docs/` (documentation only).
    - Planning/coordination must be kept in `AGENTS.md` and the next-session prompt in `NEXT_PROMPT.md`.
    - See `docs/legacy_migration_checklist.md` for the historical migration checklist.
@@ -20,7 +42,27 @@
 - Lint example: `matlab -batch "checkcode('src/metrics/hypervolume.m')"`.
 - Run tests (if present): `matlab -batch "runtests"` or in-session `runtests('tests')`.
  - Demo experiment (m=2, HZ + Wolfe): `run('experiments/run_vop_demo.m')` (prints hv, purity, gamma-delta).
- - Sweep experiment: `run('experiments/run_vop_sweep.m')` (compares directions/line-searches).
+- Sweep experiment: `run('experiments/run_vop_sweep.m')` (compares directions/line-searches).
+- Save CSV results (versioned): `run('experiments/run_save_results.m')` (writes `outputs/runs/results_vN.csv` and updates `results_latest.csv`).
+- Plot profiles from CSV: `run('experiments/plot_profiles_from_csv.m')` (saves figures to `outputs/performance/`).
+- Inline profiles (fresh runs, no CSV): `run('experiments/run_performance_profiles.m')`.
+- Direction sanity sweep: `run('experiments/run_direction_sanity.m')`.
+
+## Running For One Or Many Problems
+- Most experiments accept a workspace variable `problems` (cell array of names) to filter the registry:
+  - One problem:
+    - `problems = {'IKK1'}; run('experiments/run_vop_demo.m')`
+  - Multiple:
+    - `problems = {'IKK1','TE8','MOP5'}; run('experiments/run_save_results.m')`
+- Without `problems` set, scripts default to the P‑set subset: `{'IKK1','TE8','MOP5','MOP7','SLCDT2'}`.
+- CSV → Profiles workflow:
+  - Save results: `problems = {'IKK1','TE8'}; run('experiments/run_save_results.m')`
+  - Plot from latest CSV: `run('experiments/plot_profiles_from_csv.m')`
+
+## Problem Glossary
+- Print a short glossary with reference keys: `problem_glossary()`
+- Filter output: `problem_glossary({'IKK1','TE8'})`
+- References correspond to keys in `refs/problems.tex` (see that file for full details and formulations).
 
 ## Coding Style & Naming Conventions
 - One public function per `.m` file. File name must match the function name.
@@ -43,6 +85,7 @@
 - Do not embed credentials or absolute local paths. Use relative paths and `addpath`.
 - Prefer `startup.m` (git-ignored) for local configuration such as path additions.
 - Ensure scripts can run non-interactively (compatible with `-batch`).
+- Console progress: long‑running experiments print a one‑line progress with percentage, count, elapsed, and ETA.
 
 ## Usage Example
 Run a 2-objective solve with recommended defaults (sd + qwolfe):
@@ -182,6 +225,8 @@ Notes this session
 - Reference fronts: caching enabled in `build_reference_front` with `problems/ref/` and seeded overlap for demo.
 - Logs: use `logs/` (tracked via `.gitkeep`); all `*.log` and `logs/*.txt` are git-ignored.
 - Dispatcher introduced and partially adopted (solver, HZ subproblem, `qwolfe`).
+- Performance profiles: CSV pipeline added (`run_save_results.m`, `load_performance_from_csv.m`, `plot_profiles_from_csv.m`); plotting utilities added under `src/metrics/`.
+- Outputs policy: `outputs/` artifacts are ignored; `.gitkeep` preserves folder structure.
 
 Open Questions (to confirm before executing)
 - MATLAB version support and whether Octave is required.

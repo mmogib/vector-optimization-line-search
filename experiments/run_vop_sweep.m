@@ -9,10 +9,18 @@ addpath(genpath(fullfile('src')));
 addpath(genpath(fullfile('problems')));
 
 problems = registry();
-% Restrict to P1/P2/P5/P6/P10 equivalents
-keep = {'IKK1','TE8','MOP5','MOP7','SLCDT2'};
-mask = ismember({problems.name}, keep);
-problems = problems(mask);
+% Allow user override: `problems = {'IKK1','TE8'}` in caller workspace
+if evalin('base','exist(''problems'',''var'')')
+  userList = evalin('base','problems');
+  if iscell(userList) && ~isempty(userList)
+    mask = ismember({problems.name}, userList);
+    problems = problems(mask);
+  end
+else
+  keep = {'IKK1','TE8','MOP5','MOP7','SLCDT2'};
+  mask = ismember({problems.name}, keep);
+  problems = problems(mask);
+end
 % Focus on recommended combo: sd + qwolfe
 dirs = {'sd'};
 lss  = {'qwolfe'};

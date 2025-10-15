@@ -11,9 +11,17 @@ addpath(genpath(fullfile('problems')));
 
 % Problems (P-set)
 reg = registry();
-keep = {'IKK1','TE8','MOP5','MOP7','SLCDT2'};
-mask = ismember({reg.name}, keep);
-reg = reg(mask);
+if evalin('base','exist(''problems'',''var'')')
+  userList = evalin('base','problems');
+  if iscell(userList) && ~isempty(userList)
+    mask = ismember({reg.name}, userList);
+    reg = reg(mask);
+  else
+    keep = {'IKK1','TE8','MOP5','MOP7','SLCDT2'}; mask = ismember({reg.name}, keep); reg = reg(mask);
+  end
+else
+  keep = {'IKK1','TE8','MOP5','MOP7','SLCDT2'}; mask = ismember({reg.name}, keep); reg = reg(mask);
+end
 
 % Methods (direction + linesearch; labels built downstream from fields)
 methods = [ ...
