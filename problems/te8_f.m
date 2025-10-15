@@ -1,10 +1,16 @@
-function F = te8_f(x)
+﻿function F = te8_f(x)
 % te8_f  TE8 three-objective test (consolidated from legacy d=2,3,4).
 %   F = te8_f(x) returns a 3x1 vector [f1; f2; f3]
 %   Definitions (minimize):
 %     f1(x) = sum_{i=1}^n x_i^3
 %     f2(x) = sum_{i=1}^{n-1} (x_i - 4)^2 + x_n^2
 %     f3(x) = -log(x_1) + 5 * sum_{i=2}^n x_i^2
+%
+%   Properties:
+%     - convex: no (f1 is nonconvex cubic)
+%     - domain: not specified (requires x1 > 0)
+%
+%   Refactored by: Dr. Mohammed Alshahrani
 
 n = numel(x);
 f1 = sum(x(:).^3);

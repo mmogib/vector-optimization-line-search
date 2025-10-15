@@ -1,4 +1,4 @@
-function G = te8_g(x)
+﻿function G = te8_g(x)
 % te8_g  Gradients for TE8 test (consolidated from legacy d=2,3,4).
 %   G = te8_g(x) returns a 1x3 cell array {g1, g2, g3}
 %   where each gk is n x 1.

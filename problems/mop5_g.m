@@ -1,4 +1,4 @@
-function G = mop5_g(x)
+﻿function G = mop5_g(x)
 % mop5_g  Gradients for MOP5.
 
 x = x(:); n = numel(x);

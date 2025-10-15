@@ -1,4 +1,4 @@
-function G = zlt1_g(x, M)
+﻿function G = zlt1_g(x, M)
 % zlt1_g  Gradients for ZLT1.
 %   G = zlt1_g(x, M) returns 1xM cell array of gradients.
 

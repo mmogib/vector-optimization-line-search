@@ -1,4 +1,4 @@
-# Repository Guidelines
+﻿# Repository Guidelines
 
 ## Session Summary (Oct 2025)
 - Directions unified and hardened:
@@ -19,10 +19,34 @@
   - Added `run_performance_profiles.m` (inline) and `run_direction_sanity.m` (quick direction smoke test).
   - All experiments save artifacts under `outputs/performance/` and logs under `logs/`.
 - Outputs policy:
-  - `outputs/` folder is tracked with `.gitkeep` only; artifacts are git‑ignored.
+  - `outputs/` folder is tracked with `.gitkeep` only; artifacts are gitâ€‘ignored.
   - New files written to `outputs/performance/` and `outputs/runs/` are not committed.
 
-## Project Structure & Module Organization
+
+## Session Log (Oct 2025 — Linesearch compare + problems)
+- Git ignore: ignore NEXT_PROMPT.md and entire efs/ folder (artifacts and planning kept local).
+- Problems coverage:
+  - Implemented missing 13 problems from refs/problems.tex (IM1, JOS1, JOS2, Kur1, LE1, LRS1, LTDZ1, MHHM1, MHHM2, MLF1, MLF2, QV1, Sch1) with dispatcher/registry wiring.
+  - Added Properties to all problem f-files: convexity (derived) and domain (from refs; left “not specified” when absent; noted TE8 requires x1>0).
+  - Added “Refactored by: Dr. Mohammed Alshahrani” header note to all problem files touched.
+  - Inserted full literature references from efs/yahaya_problems.tex Table 1 refs column into corresponding problem f-files.
+- Glossary: problem_glossary() now prints alphabetically (case-insensitive) and supports filtering.
+- Experiment: added experiments/run_linesearch_compare.m to compare line-searches with a fixed direction over random starts drawn uniformly from problem domains.
+  - Captures iterations (iterations), function evals (
+fev), gradient evals (
+gev), and cpu_time_sec.
+  - Saves CSV to outputs/runs/linesearch_compare_<timestamp>.csv with success and eason columns.
+  - Generates performance profiles image to outputs/performance/linesearch_compare_<timestamp>.png using existing loaders/plotters.
+  - Adds in-place console progress (percent, count, elapsed, ETA).
+
+Usage snippets
+- Compare two line-searches with SD on 10 problems x 100 starts:
+  - setup; run('experiments/run_linesearch_compare.m')
+  - Optionally override: problems = {'BK1','DGO1',...}; run('experiments/run_linesearch_compare.m')
+
+Notes
+- Refs text is sourced from efs/yahaya_problems.tex (ptable → refs list). If that file is updated, re-run the mapping to refresh full citations in f-files.
+- CSV schema aligns with src/metrics/load_performance_from_csv.m.## Project Structure & Module Organization
 - New source lives under `src/`:
   - `src/core/` (shared utilities; e.g., `hz_subproblem.m`)
   - `src/directions/` (e.g., `direction_hz.m`, `direction_prp.m`, `direction_sd.m`)
@@ -54,8 +78,8 @@
     - `problems = {'IKK1'}; run('experiments/run_vop_demo.m')`
   - Multiple:
     - `problems = {'IKK1','TE8','MOP5'}; run('experiments/run_save_results.m')`
-- Without `problems` set, scripts default to the P‑set subset: `{'IKK1','TE8','MOP5','MOP7','SLCDT2'}`.
-- CSV → Profiles workflow:
+- Without `problems` set, scripts default to the Pâ€‘set subset: `{'IKK1','TE8','MOP5','MOP7','SLCDT2'}`.
+- CSV â†’ Profiles workflow:
   - Save results: `problems = {'IKK1','TE8'}; run('experiments/run_save_results.m')`
   - Plot from latest CSV: `run('experiments/plot_profiles_from_csv.m')`
 
@@ -66,7 +90,7 @@
 
 ## Coding Style & Naming Conventions
 - One public function per `.m` file. File name must match the function name.
-- Indentation: 2 spaces; avoid tabs. Keep lines ≤ 100 chars.
+- Indentation: 2 spaces; avoid tabs. Keep lines â‰¤ 100 chars.
 - Names: lowercase, descriptive; avoid spaces. Prefer `myFunction` or `my_function` consistently within a folder; match existing local patterns.
 - Add a help header: first comment line summarizes purpose; include brief I/O docs and examples.
 - Keep scripts side-effect free when possible; separate I/O from computation.
@@ -85,7 +109,7 @@
 - Do not embed credentials or absolute local paths. Use relative paths and `addpath`.
 - Prefer `startup.m` (git-ignored) for local configuration such as path additions.
 - Ensure scripts can run non-interactively (compatible with `-batch`).
-- Console progress: long‑running experiments print a one‑line progress with percentage, count, elapsed, and ETA.
+- Console progress: longâ€‘running experiments print a oneâ€‘line progress with percentage, count, elapsed, and ETA.
 
 ## Usage Example
 Run a 2-objective solve with recommended defaults (sd + qwolfe):
@@ -126,21 +150,21 @@ Refactor Plan for VOP Line-Search Repository (live)
 
 Checklist (authoritative)
 
-- [x] Phase 0 — Inventory & Mapping
+- [x] Phase 0 â€” Inventory & Mapping
   - [x] Catalogue `.m` files by role (core, directions, line-search, problems, metrics, utilities).
   - [x] Identify duplicates/overlaps and choose canonical sources.
 
-- [x] Phase 1 — Target Structure
+- [x] Phase 1 â€” Target Structure
   - [x] Create folders: `src/core/`, `src/directions/`, `src/linesearch/`, `problems/`, `src/metrics/`, `experiments/`, `tests/`.
   - [x] Define relocation rules for scripts and `.mat` datasets.
 
-- [x] Phase 2 — API Unification
+- [x] Phase 2 â€” API Unification
 - [x] Directions: `direction_sd`, `direction_prp`, `direction_hz` (initial v via QP, adaptive update in direction).
   - [x] Line search wrappers: `linesearch_*` covering Wolfe/qWolfe/Zoom for m=2 and m=3.
 - [x] Solver: `vop_solve(problem, opts)` implemented with unified loop and HZ betaki update.
   - [x] Metrics relocated to `src/metrics/`.
 
-- [x] Phase 3 — Migration & Cleanup
+- [x] Phase 3 â€” Migration & Cleanup
   - [x] Introduce unified problem dispatcher (`problem_dispatcher.m`).
   - [x] Wire solver and HZ subproblem to dispatcher; refactor `qwolfe` to use it (m=2).
   - [x] Deduplicate TE8/FDS via family wrappers (`te8_f/g`, `fds_f/g`) and delegate from `f*/g*`.
@@ -148,20 +172,20 @@ Checklist (authoritative)
   - [x] Remove legacy direct calls to `f1/f2/f3` and `g1/g2/g3` once all call sites use dispatcher (legacy files removed and fallback disabled).
   - [ ] Remove legacy duplicates under `vector_optimization/*` (keep `.mat` datasets).
   - [~] Consolidate problems under `problems/` (functions + data folders) with family wrappers (partially complete; more families can be added).
-  - [~] Optional: expand problem registry (IDs → metadata, refs/domains) (partially complete).
+  - [~] Optional: expand problem registry (IDs â†’ metadata, refs/domains) (partially complete).
 
-- [x] Phase 4 — Validation
+- [x] Phase 4 â€” Validation
   - [x] Demo and sweep run with logging (`logs/*.txt` ignored). Purity robustness improved (relative tol, overlap).
   - [x] HZ tuning sweep added (`experiments/run_hz_tuning.m`) with logs and summarizer.
   - [x] Re-run after dispatcher/linesearch/directions consolidation; compared hv/purity/gamma-delta.
   - [ ] Document any intentional changes.
 
-- [ ] Phase 5 — Docs & Examples
+- [ ] Phase 5 â€” Docs & Examples
   - [ ] Expand examples and usage notes in AGENTS.md.
   - [x] Keep docs/ for documentation only; planning in AGENTS.md and NEXT_PROMPT.md (enforced).
 
 ## MIGRATION CHECK LIST
-Scope: remove direct uses of `f1/f2/f3` and `g1/g2/g3` in favor of the unified dispatcher API: `Ffun(x)` (m×1), `Gfun(x)` (1×m cell).
+Scope: remove direct uses of `f1/f2/f3` and `g1/g2/g3` in favor of the unified dispatcher API: `Ffun(x)` (mÃ—1), `Gfun(x)` (1Ã—m cell).
 
 Owner: refactoring branch
 
@@ -190,13 +214,13 @@ Validation & cleanup
 - [x] Decide disposition of `f1/f2/f3` and `g1/g2/g3` (removed; deprecate in README if referenced)
 
 Notes
-- Keep `G` as a 1×m cell array; `F` as m×1.
+- Keep `G` as a 1Ã—m cell array; `F` as mÃ—1.
 - Prefer shared helper for directional derivative evaluation in linesearch code to avoid duplication.
 
-- Phase 0 — Inventory & Mapping
+- Phase 0 â€” Inventory & Mapping
   - Catalogue all `.m` files by role: core solver, search directions (PRP, SD, HZ, etc.), line-search strategies (Armijo/Wolfe/Zoom), problems/datasets, scripts, metrics, utilities. Note duplicates and overlaps.
 
-- Phase 1 — Target Structure
+- Phase 1 â€” Target Structure
   - `src/core/` (main solver, shared utils)
   - `src/directions/` (PRP, SD, HZ, ...)
   - `src/linesearch/` (armijo, wolfe, zoom, backtracking)
@@ -205,19 +229,19 @@ Notes
   - `experiments/` (runner scripts, configs)
   - `tests/` (matlab.unittest)
 
-- Phase 2 — API Unification (no behavior change)
+- Phase 2 â€” API Unification (no behavior change)
   - Directions: `d = direction_<name>(x, grad, history, opts)`
   - Line search: `[alpha, info] = linesearch_<name>(f, g, x, d, opts)`
   - Core solver: `[x, F, info] = vop_solve(problem, opts)`
   - Standardize `opts`, seeding, and shared stop criteria.
 
-- Phase 3 — Non-destructive Migration
+- Phase 3 â€” Non-destructive Migration
   - Move files into target folders; remove spaces in filenames; add compatibility shims that forward to the unified API. Extract common code to `src/core/`. Remove true duplicates after parity checks.
 
-- Phase 4 — Validation & Parity
+- Phase 4 â€” Validation & Parity
   - Run golden benchmarks and compare metrics (hypervolume, purity, Gamma/Delta). Investigate any regressions; document intentional differences.
 
-- Phase 5 — Cleanup & Docs
+- Phase 5 â€” Cleanup & Docs
   - Remove shims after callers are updated. Refresh AGENTS.md and usage examples.
 
 Notes this session
@@ -234,3 +258,4 @@ Open Questions (to confirm before executing)
 - Public entry scripts that must keep current names.
 - Priority combinations to validate first (e.g., PRP + Wolfe).
 - Preferred naming style for new files: `camelCase` vs `snake_case`.
+

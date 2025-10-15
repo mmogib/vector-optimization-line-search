@@ -1,8 +1,13 @@
-function F = zlt1_f(x, M)
+﻿function F = zlt1_f(x, M)
 % zlt1_f  ZLT1 M-objective quadratic separable problem.
 %   F = zlt1_f(x, M)
 %   fm(x) = (x_m - 1)^2 + sum_{i!=m} x_i^2, m=1..M
-%   Domain: x_i in [-1000, 1000]
+%
+%   Properties:
+%     - convex: yes (sum of convex quadratics)
+%     - domain: x_i in [-1000, 1000]
+%
+%   Refactored by: Dr. Mohammed Alshahrani
 
 x = x(:);
 n = numel(x);

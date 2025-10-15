@@ -1,4 +1,4 @@
-function G = sp1_g(x)
+﻿function G = sp1_g(x)
 % sp1_g  Gradients for SP1 two-objective analytic problem.
 %   G = sp1_g(x)
 %   - x: decision vector (uses first 2 components)

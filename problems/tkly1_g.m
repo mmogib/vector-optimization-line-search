@@ -1,4 +1,4 @@
-function G = tkly1_g(x)
+﻿function G = tkly1_g(x)
 % tkly1_g  Gradients for TKLY1.
 
 x = x(:); n = numel(x);

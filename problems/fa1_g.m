@@ -1,4 +1,4 @@
-function G = fa1_g(x)
+﻿function G = fa1_g(x)
 % fa1_g  Gradients for FA1 (3 objectives).
 
 x = x(:); n = numel(x);

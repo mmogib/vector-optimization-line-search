@@ -1,4 +1,4 @@
-function G = fds_g(x)
+﻿function G = fds_g(x)
 % fds_g  Gradients for FDS test (consolidated from legacy d=7,8,9).
 %   G = fds_g(x) returns a 1x3 cell array {g1, g2, g3}
 %   where each gk is n x 1.

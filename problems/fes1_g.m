@@ -1,4 +1,4 @@
-function G = fes1_g(x)
+﻿function G = fes1_g(x)
 % fes1_g  Gradients for FES1.
 
 x = x(:); n = numel(x);

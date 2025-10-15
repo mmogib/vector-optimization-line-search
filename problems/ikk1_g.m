@@ -1,4 +1,4 @@
-function G = ikk1_g(x)
+﻿function G = ikk1_g(x)
 % ikk1_g  Gradients for IKK1 (legacy P1 mapping).
 
 x = x(:); n = numel(x);

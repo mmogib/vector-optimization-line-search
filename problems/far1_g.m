@@ -1,4 +1,4 @@
-function G = far1_g(x)
+﻿function G = far1_g(x)
 % far1_g  Gradients for Far1.
 
 n = numel(x);

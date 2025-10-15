@@ -1,4 +1,4 @@
-function G = dgo2_g(x)
+﻿function G = dgo2_g(x)
 % dgo2_g  Gradients for DGO2.
 %   G = dgo2_g(x) returns {g1, g2}, each n x 1 with only first comp nonzero.
 

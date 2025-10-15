@@ -1,6 +1,10 @@
-function F = far1_f(x)
+﻿function F = far1_f(x)
 % far1_f  Far1 two-objective landscape test.
-%   Domain: x_i in [-1, 1]
+%   Properties:
+%     - convex: no (mixture of Gaussian bumps)
+%     - domain: x_i in [-1, 1]
+%
+%   Refactored by: Dr. Mohammed Alshahrani
 
 if numel(x) < 2, error('far1_f:dim','Far1 expects at least 2 variables'); end
 x1 = x(1); x2 = x(2);
@@ -25,4 +29,6 @@ F2 = +2*E(20, 0.2, 0.0) ...
 F = [F1; F2];
 
 end
+
+
 

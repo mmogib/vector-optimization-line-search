@@ -1,4 +1,4 @@
-function G = vu2_g(x)
+﻿function G = vu2_g(x)
 % vu2_g  Gradients for VU2.
 
 n = numel(x);

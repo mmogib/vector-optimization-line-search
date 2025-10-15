@@ -1,4 +1,4 @@
-function G = slcdt2_g(x)
+﻿function G = slcdt2_g(x)
 % slcdt2_g  Gradients for SLCDT2 (legacy P10 mapping), n=10.
 
 x = x(:); n = numel(x);

@@ -1,4 +1,4 @@
-function G = sk2_g(x)
+﻿function G = sk2_g(x)
 % sk2_g  Gradients for SK2 (converted to minimization).
 
 x = x(:); n = numel(x);

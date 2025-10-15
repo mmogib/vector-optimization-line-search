@@ -1,4 +1,4 @@
-function G = dpam1_g(x, params)
+﻿function G = dpam1_g(x, params)
 % dpam1_g  Gradients for DPAM1 with rotation.
 %   G = dpam1_g(x, params)
 %   See dpam1_f for definitions.

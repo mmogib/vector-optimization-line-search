@@ -12,6 +12,13 @@ if ~isempty(filter)
   reg = reg(mask);
 end
 
+% Sort alphabetically by problem name
+if ~isempty(reg)
+  names = upper({reg.name});
+  [~, idx] = sort(names);
+  reg = reg(idx);
+end
+
 % Print
 fprintf('Available problems (%d):\n', numel(reg));
 for i = 1:numel(reg)
@@ -60,4 +67,3 @@ refs.VFM1   = 'VFM??';
 refs.VU2    = 'VU??';
 % Add others from registry names as needed
 end
-

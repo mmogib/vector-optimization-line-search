@@ -1,4 +1,4 @@
-function G = ff1_g(x)
+﻿function G = ff1_g(x)
 % ff1_g  Gradients for FF1.
 
 n = numel(x);

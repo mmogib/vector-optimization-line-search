@@ -1,4 +1,4 @@
-function G = vfm1_g(x)
+﻿function G = vfm1_g(x)
 % vfm1_g  Gradients for VFM1 (3 objectives).
 
 n = numel(x);

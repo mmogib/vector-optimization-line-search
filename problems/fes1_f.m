@@ -1,8 +1,12 @@
-function F = fes1_f(x)
+﻿function F = fes1_f(x)
 % fes1_f  FES1 two-objective test (per user-provided definitions).
 %   f1 = sum_{i=1..n} | x_i - c_i |^{0.5}, where c_i = exp(0.5*exp((i/n)^2)/3)
 %   f2 = sum_{i=1..n} ( x_i - 0.5*cos(10*pi*i/n) - 0.5 )^2
-%   Domain: x_i in [0, 1]
+%   Properties:
+%     - convex: no (|x-c|^{0.5} is nonconvex)
+%     - domain: x_i in [0, 1]
+%
+%   Refactored by: Dr. Mohammed Alshahrani
 
 x = x(:);
 n = numel(x);

@@ -21,3 +21,7 @@ logs/*.txt
 !/outputs/performance/.gitkeep
 /outputs/runs/*
 !/outputs/runs/.gitkeep
+
+# Session planning and references (not tracked)
+NEXT_PROMPT.md
+refs/

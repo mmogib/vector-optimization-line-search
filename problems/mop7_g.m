@@ -1,4 +1,4 @@
-function G = mop7_g(x)
+﻿function G = mop7_g(x)
 % mop7_g  Gradients for MOP7.
 
 x = x(:); n = numel(x);

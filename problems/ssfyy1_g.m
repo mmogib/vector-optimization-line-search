@@ -1,4 +1,4 @@
-function G = ssfyy1_g(x)
+﻿function G = ssfyy1_g(x)
 % ssfyy1_g  Gradients for SSFYY1.
 
 n = numel(x);

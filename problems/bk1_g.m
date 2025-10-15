@@ -1,4 +1,4 @@
-function G = bk1_g(x)
+﻿function G = bk1_g(x)
 % bk1_g  Gradients for BK1 two-objective test [BK1996].
 %   G = bk1_g(x)
 %   - x: decision vector (uses first 2 components)

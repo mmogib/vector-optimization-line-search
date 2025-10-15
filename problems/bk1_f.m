@@ -1,4 +1,4 @@
-function f = bk1_f(x)
+﻿function f = bk1_f(x)
 % bk1_f  BK1 two-objective test problem [BK1996].
 %   f = bk1_f(x)
 %   - x: decision vector (uses first 2 components)
@@ -8,7 +8,11 @@ function f = bk1_f(x)
 %     f1(x1,x2) = x1^2 + x2^2
 %     f2(x1,x2) = (x1 - 5)^2 + (x2 - 5)^2
 %
-%   Parameter domain (from Table XVI): x_i in [-5, 10].
+%   Properties:
+%     - convex: yes (sum of convex quadratics)
+%     - domain: x_i in [-5, 10]
+%
+%   Refactored by: Dr. Mohammed Alshahrani
 %
 %   Reference: [BK1996] T. T. Binh and U. Korn (1996).
 %   "An evolution strategy for the multiobjective optimization," Proc. 2nd Int. Conf. Genetic Algorithms.

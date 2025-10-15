@@ -117,6 +117,45 @@ switch name
   case 'sk2'
     Ffun = @(x) first_m(sk2_f(x), m);
     Gfun = @(x) first_m_cell(sk2_g(x), m);
+  case 'im1'
+    Ffun = @(x) first_m(im1_f(x), m);
+    Gfun = @(x) first_m_cell(im1_g(x), m);
+  case 'jos1'
+    Ffun = @(x) first_m(jos1_f(x), m);
+    Gfun = @(x) first_m_cell(jos1_g(x), m);
+  case 'jos2'
+    Ffun = @(x) first_m(jos2_f(x), m);
+    Gfun = @(x) first_m_cell(jos2_g(x), m);
+  case 'kur1'
+    Ffun = @(x) first_m(kur1_f(x), m);
+    Gfun = @(x) first_m_cell(kur1_g(x), m);
+  case 'le1'
+    Ffun = @(x) first_m(le1_f(x), m);
+    Gfun = @(x) first_m_cell(le1_g(x), m);
+  case 'lrs1'
+    Ffun = @(x) first_m(lrs1_f(x), m);
+    Gfun = @(x) first_m_cell(lrs1_g(x), m);
+  case 'ltdz1'
+    Ffun = @(x) first_m(ltdz1_f(x), m);
+    Gfun = @(x) first_m_cell(ltdz1_g(x), m);
+  case 'mhhm1'
+    Ffun = @(x) first_m(mhhm1_f(x), m);
+    Gfun = @(x) first_m_cell(mhhm1_g(x), m);
+  case 'mhhm2'
+    Ffun = @(x) first_m(mhhm2_f(x), m);
+    Gfun = @(x) first_m_cell(mhhm2_g(x), m);
+  case 'mlf1'
+    Ffun = @(x) first_m(mlf1_f(x), m);
+    Gfun = @(x) first_m_cell(mlf1_g(x), m);
+  case 'mlf2'
+    Ffun = @(x) first_m(mlf2_f(x), m);
+    Gfun = @(x) first_m_cell(mlf2_g(x), m);
+  case 'qv1'
+    Ffun = @(x) first_m(qv1_f(x), m);
+    Gfun = @(x) first_m_cell(qv1_g(x), m);
+  case 'sch1'
+    Ffun = @(x) first_m(sch1_f(x), m);
+    Gfun = @(x) first_m_cell(sch1_g(x), m);
   otherwise % legacy by numeric ID or unknown name: fall back
     if isnumeric(problemKey)
       error('problem_dispatcher:LegacyRemoved', 'Legacy f1/f2/f3 and g1/g2/g3 have been removed. Use named problems.');

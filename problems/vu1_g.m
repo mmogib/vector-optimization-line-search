@@ -1,4 +1,4 @@
-function G = vu1_g(x)
+﻿function G = vu1_g(x)
 % vu1_g  Gradients for VU1 two-objective analytic problem.
 %   G = vu1_g(x)
 %   - x: decision vector (uses first 2 components)
