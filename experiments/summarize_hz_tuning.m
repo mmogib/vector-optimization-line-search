@@ -1,5 +1,6 @@
 function S = summarize_hz_tuning(logPath)
 % summarize_hz_tuning  Summarize best HZ params (qwolfe) per problem from log.
+% Refactored by: Dr. Mohammed Alshahrani
 %   S = summarize_hz_tuning('logs/hz_tuning_log.txt') returns a struct array
 %   with fields: pid, name, base_hv, base_avg, best_hv, best_avg, mu, c, ita, delta_hv.
 

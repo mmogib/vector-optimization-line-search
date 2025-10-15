@@ -1,10 +1,11 @@
 function Pref = build_reference_front(problem, opts, starts)
 % build_reference_front  Minimal reference front via multi-start solve + nondomination.
+%   Refactored by: Dr. Mohammed Alshahrani
 %   Pref: rows (points) x objectives (M)
 %   Caches to problems/ref/ by (problemId, n, direction, linesearch, starts).
 
-if nargin < 3 || isempty(starts), starts = 5; end
-if nargin < 2 || isempty(opts), opts = struct(); end
+if nargin < 3 || (numel(starts)==0), starts = 5; end
+if nargin < 2 || (numel(opts)==0), opts = struct(); end
 
 % Recommended defaults if not set
 if ~isfield(opts,'direction'), opts.direction = 'sd'; end
@@ -21,7 +22,7 @@ end
 refDir = [];
 try
     problemsDir = fileparts(which('registry'));
-    if ~isempty(problemsDir)
+    if ~(numel(problemsDir)==0)
         refDir = fullfile(problemsDir, 'ref');
         if ~exist(refDir, 'dir'), mkdir(refDir); end
     end
@@ -29,17 +30,24 @@ catch
     % if registry not on path, skip caching
 end
 
-% Cache key
-pid = problem.problemId;
+% Cache key supports name or id
 n = numel(problem.x0);
-key = sprintf('ref_pid%d_n%d_dir%s_ls%s_starts%d.mat', pid, n, lower(opts.direction), lower(opts.linesearch), starts);
+if isfield(problem,'name') && ~(numel(problem.name)==0)
+    pkey = lower(char(problem.name));
+    key = sprintf('ref_%s_n%d_dir%s_ls%s_starts%d.mat', pkey, n, lower(opts.direction), lower(opts.linesearch), starts);
+elseif isfield(problem,'problemId')
+    pid = problem.problemId;
+    key = sprintf('ref_pid%d_n%d_dir%s_ls%s_starts%d.mat', pid, n, lower(opts.direction), lower(opts.linesearch), starts);
+else
+    key = sprintf('ref_unknown_n%d_dir%s_ls%s_starts%d.mat', n, lower(opts.direction), lower(opts.linesearch), starts);
+end
 cachePath = '';
-if ~isempty(refDir)
+if ~(numel(refDir)==0)
     cachePath = fullfile(refDir, key);
 end
 
 % Load from cache if enabled and available
-if useCache && ~isempty(cachePath) && exist(cachePath, 'file')
+if useCache && ~(numel(cachePath)==0) && exist(cachePath, 'file')
     S = load(cachePath, 'Pref');
     if isfield(S, 'Pref')
         Pref = S.Pref; return
@@ -50,7 +58,7 @@ end
 Pcols = [];
 
 % Use provided start points if available
-if isfield(opts,'x0_list') && ~isempty(opts.x0_list)
+if isfield(opts,'x0_list') && ~(numel(opts.x0_list)==0)
     X0 = opts.x0_list;
     if size(X0,1) ~= n
         error('build_reference_front:BadX0', 'x0_list must be n x k');
@@ -72,7 +80,7 @@ end
 
 % Add extra random starts if requested
 if extra > 0
-    seed = 1; if isfield(opts,'seed') && ~isempty(opts.seed), seed = opts.seed; end
+    seed = 1; if isfield(opts,'seed') && ~(numel(opts.seed)==0), seed = opts.seed; end
     rng(seed);
     for s = 1:extra
         x0 = -1 + 2*rand(n,1);
@@ -86,7 +94,7 @@ if extra > 0
     end
 end
 
-if isempty(Pcols)
+if (numel(Pcols)==0)
     Pref = []; return;
 end
 
@@ -94,7 +102,7 @@ Pref = unique(Pcols', 'rows');
 Pref = nondominated_rows(Pref);
 
 % Save to cache if enabled
-if useCache && ~isempty(cachePath)
+if useCache && ~(numel(cachePath)==0)
     try, save(cachePath, 'Pref'); catch, end
 end
 

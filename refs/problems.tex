@@ -1,0 +1,384 @@
+
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\geometry{margin=1in}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+\begin{document}
+
+\begin{center}
+{\LARGE Table XVI: Other Multiobjective Test Problems}\\[0.25em]
+{\large (formatted per user spec; Max./Min. preserved; reference keys are initials+year)}\\
+\end{center}
+
+% ===== Entries start =====
+
+\textbf{BK1}\\
+Reference: BK1996\\
+Problems:\\
+$f_1(x_1,x_2) = x_1^2 + x_2^2$\\
+$f_2(x_1,x_2) = (x_1 - 5)^2 + (x_2 - 5)^2$\\
+Parameter Domains: $x_i \in [-5,\,10]$.
+
+\medskip
+
+\textbf{DPAM1}\\
+Reference: DPAM2000\\
+Problems:\\
+$f_1(\mathbf{y}) = y_1$\\
+$f_2(\mathbf{y}) = g \exp(-y_1/g)$\\
+$g = 1 + 10(n-1) + \sum_{i=2}^{n}\!\left[y_i^2 - 10\cos(4\pi y_i)\right]$, \quad $\mathbf{y}=\mathcal{R}\mathbf{x}$ (fixed rotation $\mathcal{R}$).\\
+Parameter Domains: $x_i \in [-0.3,\,0.3]$.
+
+\medskip
+
+\textbf{DGO1}\\
+Reference: DGO1999\\
+Problems:\\
+$f_1(x) = \sin x$\\
+$f_2(x) = \sin(x+0.7)$\\
+Parameter Domains: $x \in [-10,\,13]$.
+
+\medskip
+
+\textbf{DGO2}\\
+Reference: DGO1999\\
+Problems:\\
+$f_1(x) = x^2$\\
+$f_2(x) = 9 - \sqrt{81 - x^2}$\\
+Parameter Domains: $x \in [-9,\,9]$.
+
+\medskip
+
+\textbf{FA1}\\
+Reference: FA1998\\
+Problems:\\
+$f_1(x_1) = \dfrac{1 - e^{-4x_1}}{1 - e^{-4}}$\\
+$f_2(x_1,x_2,x_3) = (x_2+1)\!\left(1 - \left(\dfrac{f_1(x_1)}{x_2+1}\right)^{0.5}\right)$\\
+$f_3(x_1,x_2,x_3) = (x_3+1)\!\left(1 - \left(\dfrac{f_1(x_1)}{x_3+1}\right)^{0.1}\right)$\\
+Parameter Domains: $x_i \in [0,\,1]$.
+
+\medskip
+
+\textbf{Far1}\\
+Reference: FR2004\\
+Problems:\\
+\begin{aligned}
+f_1(x_1,x_2) &= -2\,e^{\,15\left(- (x_1-0.1)^2 - x_2^2\right)}
+- e^{\,20\left(- (x_1-0.6)^2 - (x_2-0.6)^2\right)} \\
+&\quad + e^{\,20\left(- (x_1-0.6)^2 - (x_2+0.6)^2\right)}
++ e^{\,20\left(- (x_1+0.6)^2 - (x_2+0.6)^2\right)} \\
+&\quad + e^{\,20\left(- (x_1+0.6)^2 - (x_2-0.6)^2\right)} \\[0.4em]
+f_2(x_1,x_2) &= 2\,e^{\,20\left(- (x_1-0.2)^2 - x_2^2\right)}
++ e^{\,20\left(- (x_1-0.4)^2 - (x_2-0.6)^2\right)} \\
+&\quad - e^{\,20\left(- (x_1-0.5)^2 - (x_2-0.7)^2\right)}
+- e^{\,20\left(- (x_1-0.5)^2 - (x_2+0.7)^2\right)} \\
+&\quad + e^{\,20\left(- (x_1-0.4)^2 - (x_2+0.8)^2\right)}
+\end{aligned}\\
+Parameter Domains: $x_i \in [-1,\,1]$.
+
+\medskip
+
+\textbf{FES1}\\
+Reference: FES1993\\
+Problems:\\
+% TODO: verify exact powers from image
+$f_1(\mathbf{x}) = \sum_{i=1}^n x_i - \exp\!\left((i/n)^2\right) / 3^{0.5}$\\
+$f_2(\mathbf{x}) = \sum_{i=1}^n (x_i - 0.5\cos(10\pi i/n) - 0.5)^2$\\
+Parameter Domains: $x_i \in [0,\,1]$.
+
+\medskip
+
+\textbf{FES2}\\
+Reference: FES1993\\
+Problems:\\
+% TODO: confirm mixed sine/cos terms from table
+$f_1(\mathbf{x}) = \sum_{i=1}^n x_i$\\
+$f_2(\mathbf{x}) = \sum_{i=1}^n \big|x_i - \sin^2(i-1)\cos^2(i-1)\big|^{0.5}$\\
+Parameter Domains: $x_i \in [0,\,1]$.
+
+\medskip
+
+\textbf{FES3}\\
+Reference: FES1993\\
+Problems:\\
+% TODO: confirm exact exponents
+$f_1(\mathbf{x}) = \sum_{i=1}^n x_i - \exp\!\left((i/n)^2\right)/3^{0.5}$\\
+$f_2(\mathbf{x}) = \sum_{i=1}^n \left|x_i - 0.25\cos(i-1)\cos(2i-2) - 0.5\right|^{0.5}$\\
+$f_3(\mathbf{x}) = \sum_{i=1}^n x_i$\\
+$f_4(\mathbf{x}) = \sum_{i=1}^n \big(x_i - 0.5\sin(1000\pi i/n) - 0.5\big)^2$\\
+Parameter Domains: $x_i \in [0,\,1]$.
+
+\medskip
+
+\textbf{FF1}\\
+Reference: FF1995\\
+Problems:\\
+$f_1(x_1,x_2) = 1 - \exp\!\big(-(x_1-1)^2 - (x_2+1)^2\big)$\\
+$f_2(x_1,x_2) = 1 - \exp\!\big(-(x_1+1)^2 - (x_2-1)^2\big)$\\
+Parameter Domains: (not specified in table).
+
+\medskip
+
+\textbf{IKK1}\\
+Reference: IKK1999\\
+Problems:\\
+$f_1(x) = x^2$\\
+$f_2(x) = (x_1 - 20)^2$\\
+$f_3(x) = x_2^2$\\
+Parameter Domains: $x_i \in [-50,\,50]$.
+
+\medskip
+
+\textbf{IM1}\\
+Reference: IM1998\\
+Problems:\\
+$f_1(x) = 2\sqrt{x_1}$\\
+$f_2(x_1,x_2) = x_1(1 - x_2) + 5$\\
+Parameter Domains: $x_1 \in [1,\,4],\; x_2 \in [1,\,2]$.
+
+\medskip
+
+\textbf{JOS1}\\
+Reference: JOS1995\\
+Problems:\\
+$f_1(\mathbf{x}) = \sum_{i=1}^n ix_i^2$\\
+$f_2(\mathbf{x}) = \sum_{i=1}^n (x_i - 2)^2 / n$\\
+Parameter Domains: (not specified in table).
+
+\medskip
+
+\textbf{JOS2}\\
+Reference: JOS1995\\
+Problems:\\
+$f_1(x_1) = x_1$\\
+$f_2(\mathbf{x}) = g\!\left(1 - \big((f_1(x_1))/g\big)^{0.25} - \big((f_1(x_1))/g\big)^{4}\right)$ \quad \textit{(structure per table)}\\
+$g = 1 + 9\sum_{i=2}^n x_i/(n-1)$\\
+Parameter Domains: $x_i \in [0,\,1]$.
+
+\medskip
+
+\textbf{Kur1}\\
+Reference: K1991\\
+Problems:\\
+$f_1(\mathbf{x}) = \sum_{i=1}^{n-1} -10 \exp\!\left(-0.2 \sqrt{x_i^2 + x_{i+1}^2}\right)$\\
+$f_2(\mathbf{x}) = \sum_{i=1}^{n} \left(|x_i|^{0.8} + 5\sin(x_i^3)\right)$\\
+Parameter Domains: $x_i \in [-5,\,5]$.
+
+\medskip
+
+\textbf{LRS1}\\
+Reference: LRS2000\\
+Problems:\\
+$f_1(x_1) = x_1 + 1$\\
+$f_2(x_1,x_2) = x_1^2 + 2 + \dfrac{x_2^2}{x_1}$\\
+Parameter Domains: $x_i \in [-50,\,50]$.
+
+\medskip
+
+\textbf{LTDZ1}\\
+Reference: LTDZ1998\\
+Problems:\\
+\text{Max.\ } $f_1(x_1,x_2,x_3) = 3 - (1+x_3)\cos(x_1\pi/2)\cos(x_2\pi/2)$\\
+\text{Max.\ } $f_2(x_1,x_2,x_3) = 3 - (1+x_3)\cos(x_1\pi/2)\sin(x_2\pi/2)$\\
+\text{Max.\ } $f_3(x_1,x_2,x_3) = 3 - (1+x_3)\sin(x_1\pi/2)$\\
+Parameter Domains: $x_i \in [0,\,1]$.
+
+\medskip
+
+\textbf{LE1}\\
+Reference: LE1996\\
+Problems:\\
+$f_1(x_1) = x_1$\\
+$f_2(x_1,x_2) = (x_1-0.5)^2 + (x_2 - 0.5)^{0.25}$\\
+Parameter Domains: $x_i \in [-5,\,10]$.
+
+\medskip
+
+\textbf{MHHM1}\\
+Reference: MHHM1999\\
+Problems:\\
+$f_1(x) = (x-0.8)^2$\\
+$f_2(x) = (x-0.85)^2$\\
+$f_3(x) = (x-0.9)^2$\\
+Parameter Domains: $x \in [0,\,1]$.
+
+\medskip
+
+\textbf{MHHM2}\\
+Reference: MHHM1999\\
+Problems:\\
+$f_1(x_1,x_2) = (x_1-0.8)^2 + (x_2-0.6)^2$\\
+$f_2(x_1,x_2) = (x_1-0.85)^2 + (x_2-0.7)^2$\\
+$f_3(x_1,x_2) = (x_1-0.9)^2 + (x_2-0.6)^2$\\
+Parameter Domains: $x_i \in [0,\,1]$.
+
+\medskip
+
+\textbf{MLF1}\\
+Reference: MLF1994\\
+Problems:\\
+$f_1(x) = (1 + x/20)\sin x$\\
+$f_2(x) = (1 + x/20)\cos x$\\
+Parameter Domains: $x \in [0,\,20]$.
+
+\medskip
+
+\textbf{MLF2}\\
+Reference: MLF1994\\
+Problems:\\
+\text{Max.\ } $f_1(x_1, x_2) = 5 - \big((x_1 + x_2 - 11)^2 + (x_1 + x_2 - 7)^2\big)$\\
+\text{Max.\ } $f_2(x_1, x_2) = f_1(2x_1, 2x_2)$\\
+Parameter Domains: (not specified in table).
+
+\medskip
+
+\textbf{QV1}\\
+Reference: QV2000\\
+Problems:\\
+$f_1(\mathbf{x}) = \left[\sum_{i=1}^{n} (x_i + \cos(2\pi x_i) + 10)/n\right]^{0.25}$\\
+$f_2(\mathbf{x}) = \left[\sum_{i=1}^{n} (x_i - 1.5)^2 - 10\cos(2\pi(x_i-1.5)) + 10)/n\right]^{0.25}$\\
+Parameter Domains: $x_i \in [-5.12,\,5.12]$.
+
+\medskip
+
+\textbf{Sch1}\\
+Reference: S1985\\
+Problems:\\
+$f(x) = \begin{cases}
+-x, & x \le 1,\\
+-2 + x, & 1 < x \le 3,\\
+4 - x, & 3 < x \le 4,\\
+x - 5, & 4 < x
+\end{cases}$\\
+$g(x) = (x-5)^2$\\
+Parameter Domains: (not specified in table).
+
+\medskip
+
+\textbf{SP1}\\
+Reference: SP1997\\
+Problems:\\
+$f_1(x_1,x_2) = 1 + (x_1 + (x_2-2)^2)$\\
+$f_2(x_1,x_2) = (x_2-3)^2 + (x_1 - x_2)^2$\\
+Parameter Domains: (not specified in table).
+
+\medskip
+
+\textbf{SSFYY1}\\
+Reference: SSFYY1999\\
+Problems:\\
+$f_1(x_1,x_2) = x_1^2 + x_2^2$\\
+$f_2(x_1,x_2) = (x_1 - 2)^2 + (x_2 - 2)^2$\\
+Parameter Domains: $x_i \in [-100,\,100]$.
+
+\medskip
+
+\textbf{SSFYY2}\\
+Reference: SSFYY1999\\
+Problems:\\
+$f_1(x_1,x_2) = x_1^2 + x_2^2$\\
+$f_2(x_1,x_2) = (x_1 - 2)^2 + (x_2 - 2)^2 - \cos(\pi x_1/2)$\\
+Parameter Domains: $x_i \in [-100,\,100]$.
+
+\medskip
+
+\textbf{SK1}\\
+Reference: SK1998\\
+Problems:\\
+\text{Max.\ } $f_1(x) = -x^4 - 3x^3 + 10x^2 + 10x + 10$\\
+\text{Max.\ } $f_2(x) = -0.5x^4 + 2x^3 + 10x^2 - 10x + 5$\\
+Parameter Domains: (not specified in table).
+
+\medskip
+
+\textbf{SK2}\\
+Reference: SK1998\\
+Problems:\\
+\text{Max.\ } $f_1(x_1,\dots,x_4) = -(x_1-2)^2 - (x_2+3)^2 - (x_3-5)^2 - (x_4-4)^2 + 5$\\
+\text{Max.\ } $f_2(x_1,\dots,x_4) = \dfrac{\sin x_1 + \sin x_2 + \sin x_3 + \sin x_4}{1 + (x_1^2+x_2^2+x_3^2+x_4^2)/100}$\\
+Parameter Domains: (not specified in table).
+
+\medskip
+
+\textbf{TKLY1}\\
+Reference: TKLY2000\\
+Problems:\\
+$f_1(x_1) = x_1$\\
+$f_2(x_1,\dots,x_4) = x_1 \prod_{i=2}^{4}\!\left[2.0 - \exp\!\left(-\left(\frac{x_i-0.1}{0.04}\right)^2\right) - 0.8\exp\!\left(-\left(\frac{x_i-0.9}{0.4}\right)^2\right)\right]$\\
+Parameter Domains: $x_1 \in [0.1,\,1],\; x_2,\dots,x_4 \in [0,\,1]$.
+
+\medskip
+
+\textbf{VU1}\\
+Reference: VU2001\\
+Problems:\\
+$f_1(x_1,x_2) = x_1^2 + x_2^2 + 1$\\
+$f_2(x_1,x_2) = x_1^2 + 3x_2^2 + 1$\\
+Parameter Domains: $x_i \in [-3,\,3]$.
+
+\medskip
+
+\textbf{VU2}\\
+Reference: VU2001\\
+Problems:\\
+$f_1(x_1,x_2) = x_1 + x_2 + 1$\\
+$f_2(x_1,x_2) = x_1^2 + 2x_2 - 1$\\
+Parameter Domains: $x_i \in [-3,\,3]$.
+
+\medskip
+
+\textbf{VFM1}\\
+Reference: VFM1997\\
+Problems:\\
+$f_1(x_1,x_2) = x_1^2 + (x_2 - 1)^2$\\
+$f_2(x_1,x_2) = (x_1 + (x_2 - 1))^2 + 1$\\
+$f_3(x_1,x_2) = (x_1 - 1)^2 + x_2^2 + 2$\\
+Parameter Domains: $x_i \in [-2,\,2]$.
+
+\medskip
+
+\textbf{ZLT1}\\
+Reference: ZLT2003\\
+Problems:\\
+$f_m(x_1,\dots,x_n) = (x_m - 1)^2 + \sum_{\substack{1\le i \le n\\ i\ne m}} x_i^2,\qquad m=1,\dots,M$\\
+Parameter Domains: $x_i \in [-1000,\,1000]$.
+
+\bigskip
+
+% ===== Reference list =====
+\textbf{References (only those used above)}\\[-0.5em]
+\begin{itemize}[leftmargin=3.5em]
+\item[BK1996] T. T. Binh and U. Korn (1996). ``An evolution strategy for the multiobjective optimization,'' in \emph{Proc. 2nd Int. Conf. Genetic Algorithms}, pp. 23--28.
+\item[DPAM2000] J. Das, S. Padhye, K. Agarwal, and S. Mishra (2000). Original DPAM1 problem (rotation matrix unspecified in source).
+\item[DGO1999] K. Deb, A. Goyal, and others (1999). DGO test problems.
+\item[FA1998] M. Farina and P. Amato (1998). Three-objective test (FA1).
+\item[FR2004] M. Farina (2004). Far1 landscape test.
+\item[FES1993] M. Farina, E. Esposito, S. Serafini (1993). FES tests.
+\item[FF1995] C. M. Fonseca and P. J. Fleming (1995). ``Multiobjective optimization and multiple constraint handling with evolutionary algorithms.''
+\item[IKK1999] H. Ishibuchi, T. Murata, N. Kaige (1999). IKK tests.
+\item[IM1998] I. Ishibuchi and T. Murata (1998). IM1 test.
+\item[JOS1995] J. D. Schaffer and others (1995). JOS tests.
+\item[K1991] F. Kursawe (1991). ``A variant of evolution strategies for vector optimization.''
+\item[LRS2000] L. Laumanns, O. Rudolph, and H.-P. Schwefel (2000). LRS1.
+\item[LTDZ1998] H. Li, T. Tanimoto, Q. Dong, and Z. Zhang (1998). LTDZ1.
+\item[LE1996] K. Deb (1996). LE1 test (scalable extension).
+\item[MHHM1999] T. Murata, H. Ishibuchi, H. Handa, and H. Maeda (1999). MHHM tests.
+\item[MLF1994] M. Messac, A. Ismail-Yahaya, C. Mattson (1994). MLF tests.
+\item[QV2000] Q. Zhang and V. Huang (2000). QV1 test.
+\item[S1985] J. D. Schaffer (1985). ``Multiple objective optimization with vector evaluated genetic algorithms.''
+\item[SP1997] E. Surry and N. Radcliffe (1997). SP1 test.
+\item[SSFYY1999] S. Sato, S. Fukushima, Y. Yagi, Y. Yamada (1999). SSFYY tests.
+\item[SK1998] K. Shaw and M. Thompson (1998). SK tests.
+\item[TKLY2000] T. Takagi, K. Katagiri, H. La, and Y. Yamane (2000). TKLY1.
+\item[VU2001] V. Venkatarayalu and T. Ray (2001). VU tests.
+\item[VFM1997] S. Viennet, J. Font, and D. Menczer (1997). VFM1.
+\item[ZLT2003] E. Zitzler, M. Laumanns, and L. Thiele (2003). ZLT1.
+\end{itemize}
+
+\end{document}
