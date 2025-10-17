@@ -43,7 +43,9 @@ fid = fopen(csvPath, 'w');
 if fid < 0, error('Could not open %s for writing', csvPath); end
 
 % Header
-cols = {'problem','n','init_id','direction','linesearch','iterations','nfev','ngev','cpu_time_sec','success','reason', ...
+cols = {'problem','n','init_id','direction','linesearch', ...
+        'iterations','ls_internal_iters','dir_internal_iters', ...
+        'nfev','ngev','cpu_time_sec','success','reason', ...
         'maxIter','tol','gradTol','alphamax','rho','sigma','delta','hz_mu','hz_c','hz_ita'};
 fprintf(fid, '%s\n', strjoin(cols, ','));
 
@@ -63,15 +65,19 @@ for ip = 1:numel(reg)
       try
         [~, ~, info] = vop_solve(problem, opts);
         cpu_time = cputime - t0;
-        iters = getfield_def(info,'iters',NaN);
-        nfev  = getfield_def(info,'nf',NaN);
-        ngev  = getfield_def(info,'ng',NaN);
-        success = 1; reason = getfield_def(info,'reason','');
+        iters = utils.getfield_def(info,'iters',NaN);
+        lsi   = utils.getfield_def(info,'ls_internal_iters',NaN);
+        diri  = utils.getfield_def(info,'dir_internal_iters',NaN);
+        nfev  = utils.getfield_def(info,'nf',NaN);
+        ngev  = utils.getfield_def(info,'ng',NaN);
+        success = 1; reason = utils.getfield_def(info,'reason','');
       catch ME
         cpu_time = cputime - t0;
         reason = ME.message;
       end
-      row = {name, n, s, base.direction, base.linesearch, iters, nfev, ngev, cpu_time, success, reason, ...
+      row = {name, n, s, base.direction, base.linesearch, ...
+             iters, lsi, diri, ...
+             nfev, ngev, cpu_time, success, reason, ...
              getf(opts,'maxIter'), getf(opts,'tol'), getf(opts,'gradTol'), getf(opts,'alphamax'), ...
              getf(opts,'rho'), getf(opts,'sigma'), getf(opts,'delta'), getf(opts,'hz_mu'), getf(opts,'hz_c'), getf(opts,'hz_ita')};
       write_row(fid, row);
@@ -80,7 +86,7 @@ for ip = 1:numel(reg)
       elapsed = toc(tStart);
       pct = 100 * c / T;
       if c > 0, eta = (elapsed / c) * (T - c); else, eta = NaN; end
-      fprintf('Progress: %3.0f%% [%d/%d] Elapsed %s ETA %s\r', pct, c, T, time_fmt(elapsed), time_fmt(eta));
+      fprintf('Progress: %3.0f%% [%d/%d] Elapsed %s ETA %s\r', pct, c, T, utils.format_duration(elapsed), utils.format_duration(eta));
     end
   end
 end
@@ -109,14 +115,7 @@ csvPath = fullfile(dirPath, sprintf('%s_v%d.csv', base, v));
 latestPath = fullfile(dirPath, sprintf('%s_latest.csv', base));
 end
 
-function s = time_fmt(t)
-% time_fmt  Format seconds as MM:SS (or '--:--' if NaN)
-if ~isfinite(t) || t < 0
-  s = '--:--'; return
-end
-m = floor(t/60); s2 = floor(rem(t,60));
-s = sprintf('%02d:%02d', m, s2);
-end
+% (time_fmt replaced by utils.format_duration)
 
 function v = getf(s, name)
 if isfield(s, name) && ~(numel(s.(name))==0)
@@ -148,10 +147,4 @@ end
 fprintf(fid, '\n');
 end
 
-function v = getfield_def(s, name, default)
-if isstruct(s) && isfield(s,name) && ~(numel(s.(name))==0)
-  v = s.(name);
-else
-  v = default;
-end
-end
+% (getfield_def replaced by utils.getfield_def)

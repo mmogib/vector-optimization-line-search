@@ -1,6 +1,6 @@
-% Refactored by: Dr. Mohammed Alshahrani
 function [Rloopps,data]=Gamma_Delta(P1,P2,P3,P4)
 % Pi: Approximation of Pareto set obtained by a slover for a problem;  i=1,2,3,4
+% Refactored by: Dr. Mohammed Alshahrani
 s=4;
 Rloopps=zeros(1,s);
 data=zeros(1,s);

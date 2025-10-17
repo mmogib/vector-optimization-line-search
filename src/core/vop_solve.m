@@ -82,6 +82,7 @@ end
 
 % Initial evals
 [Fvals, grads] = eval_FG_local(x, Ffun, Gfun);
+% Count one objective and one gradient call as m evaluations each
 nf = m; ng = m;
 
 % Initialize
@@ -89,6 +90,7 @@ history = struct('grad_prev',[],'d_prev',[],'v_prev',[]);
 alphas = zeros(maxIter,1);
 reason = 'maxIter';
 F_inter = [];
+ls_iters_total = 0; dir_iters_total = 0;
 
 % Initialize direction
 dvec = [];
@@ -112,6 +114,11 @@ for k = 1:maxIter
         otherwise
             error('vop_solve:BadDirection','Unknown direction %s', directionName);
     end
+
+    % Accumulate internal iterations and evals from direction (if any)
+    dir_iters_total = dir_iters_total + getfielddef(dstate,'iters',0);
+    nf = nf + getfielddef(dstate,'nf',0);
+    ng = ng + getfielddef(dstate,'ng',0);
 
     if norm(dvec) < tol
         reason = 'small_direction';
@@ -163,6 +170,8 @@ for k = 1:maxIter
     end
 
     alphas(k) = alpha;
+    % Accumulate line-search internal iterations and evals
+    ls_iters_total = ls_iters_total + getfielddef(lsinfo,'iters',0);
     nf = nf + getfielddef(lsinfo,'nf',0);
     ng = ng + getfielddef(lsinfo,'ng',0);
 
@@ -225,7 +234,9 @@ for k = 1:maxIter
     end
 end
 
-info = struct('iters', numel(alphas), 'alphas', alphas, 'nf', nf, 'ng', ng, 'reason', reason, 'direction', directionName, 'linesearch', linesearchName);
+info = struct('iters', numel(alphas), 'alphas', alphas, 'nf', nf, 'ng', ng, ...
+              'ls_internal_iters', ls_iters_total, 'dir_internal_iters', dir_iters_total, ...
+              'reason', reason, 'direction', directionName, 'linesearch', linesearchName);
 if ~(numel(F_inter)==0), info.intermediateF = F_inter; end
 if exist('Xhist','var')
     info.X = Xhist; info.Fhist = Fhist;

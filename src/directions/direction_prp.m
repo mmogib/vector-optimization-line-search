@@ -43,4 +43,4 @@ else
     d = -grad + beta * history.d_prev;
 end
 
-state = struct('name','prp+','beta',beta,'restarted',logical(restart));
+state = struct('name','prp+','beta',beta,'restarted',logical(restart), 'iters',1,'nf',0,'ng',0);

@@ -4,6 +4,7 @@ function [data, labels, problems] = load_performance_from_csv(csvPath)
 %   - csvPath: path to results CSV (from run_save_results)
 %   Returns:
 %     data: struct with fields iterations, nfev, ngev, time (N x K)
+%           and optionally ls_internal_iters, dir_internal_iters if present
 %     labels: 1 x K method labels as '<direction> + <linesearch>'
 %     problems: N x 2 cell array of {problemName, n}
 %   Notes:
@@ -32,6 +33,9 @@ end
 
 % Initialize matrices
 iters = NaN(N,K); nfev = NaN(N,K); ngev = NaN(N,K); tm = NaN(N,K);
+lsi = NaN(N,K); diri = NaN(N,K);
+has_lsi  = any(strcmpi(T.Properties.VariableNames, 'ls_internal_iters'));
+has_diri = any(strcmpi(T.Properties.VariableNames, 'dir_internal_iters'));
 
 for i=1:N
   for j=1:K
@@ -41,11 +45,15 @@ for i=1:N
       nfev(i,j)  = nanmedian(T.nfev(mask));
       ngev(i,j)  = nanmedian(T.ngev(mask));
       tm(i,j)    = nanmedian(T.cpu_time_sec(mask));
+      if has_lsi,  lsi(i,j)  = nanmedian(T.ls_internal_iters(mask)); end
+      if has_diri, diri(i,j) = nanmedian(T.dir_internal_iters(mask)); end
     end
   end
 end
 
 data = struct('iterations', iters, 'nfev', nfev, 'ngev', ngev, 'time', tm);
+if has_lsi,  data.ls_internal_iters  = lsi;  end
+if has_diri, data.dir_internal_iters = diri; end
 
 end
 
