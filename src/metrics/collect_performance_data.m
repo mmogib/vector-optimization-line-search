@@ -50,17 +50,17 @@ for ip = 1:N
       try
         [~, ~, info] = vop_solve(problem, opts);
         vals_time(s)  = toc(t0);
-        vals_iters(s) = getfield_def(info, 'iters', NaN);
-        vals_nfev(s)  = getfield_def(info, 'nf', NaN);
-        vals_ngev(s)  = getfield_def(info, 'ng', NaN);
+        vals_iters(s) = utils.getfield_def(info, 'iters', NaN);
+        vals_nfev(s)  = utils.getfield_def(info, 'nf', NaN);
+        vals_ngev(s)  = utils.getfield_def(info, 'ng', NaN);
       catch
         vals_time(s)  = toc(t0);
       end
     end
-    iters(ip,k) = nanmedian(vals_iters);
-    nfev(ip,k)  = nanmedian(vals_nfev);
-    ngev(ip,k)  = nanmedian(vals_ngev);
-    tm(ip,k)    = nanmedian(vals_time);
+    iters(ip,k) = median(vals_iters);
+    nfev(ip,k)  = median(vals_nfev);
+    ngev(ip,k)  = median(vals_ngev);
+    tm(ip,k)    = median(vals_time);
   end
 end
 
@@ -78,11 +78,5 @@ for i=1:numel(fn)
 end
 end
 
-function v = getfield_def(s, name, default)
-if isstruct(s) && isfield(s,name) && ~(numel(s.(name))==0)
-  v = s.(name);
-else
-  v = default;
-end
-end
+% (getfield_def replaced by utils.getfield_def)
 

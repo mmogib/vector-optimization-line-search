@@ -66,7 +66,7 @@ while i < imax
 
     F_a0 = Ffun(x + alpha0*dvec); nf = nf + 1;
     if r_at(r, anchor) * F_a1(anchor) > armijo || (r_at(r, anchor) * F_a1(anchor) >= r_at(r, anchor) * F_a0(anchor) && i > 1)
-        [alpha, nf2, ng2] = zoom_anchor(alpha0, alpha1, x, dvec, anchor, sigmaba, rhoba, r, Ffun, Gfun, epsiki);
+        [alpha, nf2, ng2, zits] = zoom_anchor(alpha0, alpha1, x, dvec, anchor, sigmaba, rhoba, r, Ffun, Gfun, epsiki);
         nf = nf + nf2; ng = ng + ng2;
         break;
     end
@@ -76,7 +76,7 @@ while i < imax
         alpha = alpha1; break
     end
     if r_at(r, anchor) * G_a1{anchor}' * dvec >= 0
-        [alpha, nf2, ng2] = zoom_anchor(alpha1, alpha0, x, dvec, anchor, sigmaba, rhoba, r, Ffun, Gfun, epsiki);
+        [alpha, nf2, ng2, zits] = zoom_anchor(alpha1, alpha0, x, dvec, anchor, sigmaba, rhoba, r, Ffun, Gfun, epsiki);
         nf = nf + nf2; ng = ng + ng2;
         break;
     end
@@ -86,11 +86,15 @@ end
 % Fallback
 if ~exist('alpha','var'), alpha = alpha1; end
 
-info = struct('name','dwolfe', 'nf', nf, 'ng', ng, 'anchor', anchor);
+% Internal iterations: outer bracket steps (i) plus zoom iterations (if any)
+iters = i;
+try, iters = iters + zits; catch, end
+
+info = struct('name','dwolfe', 'nf', nf, 'ng', ng, 'iters', iters, 'anchor', anchor);
 
 end
 
-function [alphak, nf, ng] = zoom_anchor(alpha0, alpha1, x, dvec, anchor, sigmaba, rhoba, r, Ffun, Gfun, epsiki)
+function [alphak, nf, ng, s] = zoom_anchor(alpha0, alpha1, x, dvec, anchor, sigmaba, rhoba, r, Ffun, Gfun, epsiki)
 nf = 0; ng = 0;
 s = 0; smax = 20;
 while s < smax

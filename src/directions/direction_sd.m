@@ -10,4 +10,4 @@ if nargin < 2
 end
 
 d = -grad;
-state = struct('name','sd');
+state = struct('name','sd','iters',1,'nf',0,'ng',0);

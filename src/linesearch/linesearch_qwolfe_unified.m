@@ -116,7 +116,10 @@ while s < smax
 end
 
 alpha = alphak;
-info = struct('name','qwolfe','nf',nf,'ng',ng,'epsiki',epsiki);
+iters = s + 1;
+% If we invoked a DWOLFE zoom, include its internal iterations if provided
+try, iters = iters + getfielddef(info2,'iters',0); catch, end
+info = struct('name','qwolfe','nf',nf,'ng',ng,'iters',iters,'epsiki',epsiki);
 
 end
 

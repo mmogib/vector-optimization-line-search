@@ -21,7 +21,7 @@ if nargin < 2 || isempty(labels)
 end
 if nargin < 3, opts = struct(); end
 
-fh = getfield_def(opts, 'figure', []);
+fh = utils.getfield_def(opts, 'figure', []);
 if isempty(fh) || ~ishandle(fh)
   fh = figure('Name','Performance Profiles','Color','w');
 end
@@ -67,6 +67,17 @@ else
   title('(V) CPU time (missing)'); axis off
 end
 
+% Optional: line-search internal iterations (VI)
+subplot_idx = subplot_idx + 1;
+subplot(2,3,subplot_idx);
+if isfield(data,'ls_internal_iters') && ~isempty(data.ls_internal_iters)
+  % Use tauMax.ls_internal_iters if provided; else default 5
+  tmax = 5; if isfield(tauMax,'ls_internal_iters'), tmax = tauMax.ls_internal_iters; end
+  plot_performance_profile(data.ls_internal_iters, labels, gca, '(VI) LS internal iterations', tmax);
+else
+  title('(VI) LS internal iterations (missing)'); axis off
+end
+
 end
 
 function K = infer_K(data)
@@ -88,11 +99,5 @@ for i=1:numel(fn)
 end
 end
 
-function v = getfield_def(s, name, default)
-if isstruct(s) && isfield(s,name) && ~isempty(s.(name))
-  v = s.(name);
-else
-  v = default;
-end
-end
+% (getfield_def replaced by utils.getfield_def)
 

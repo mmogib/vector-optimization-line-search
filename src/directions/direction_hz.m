@@ -86,7 +86,18 @@ if hasPrev
 end
 
 % Package state and persistent history for next iteration
-state = struct('name','hz','fval',fxkivki,'qp_exitflag',out.exitflag);
+% Capture internal counts: hz_subproblem evaluates gradients once; count as 1 Gfun call
+dir_ng = 1;
+dir_nf = 0;
+dir_iters = 1;
+try
+    if isstruct(out) && isfield(out,'output') && isstruct(out.output) && isfield(out.output,'iterations')
+        dir_iters = out.output.iterations;
+    end
+catch
+end
+
+state = struct('name','hz','fval',fxkivki,'qp_exitflag',out.exitflag, 'nf',dir_nf,'ng',dir_ng,'iters',dir_iters);
 state.history = struct('v_prev', v, 'd_prev', d, 'grads_prev', grads_cur, 'fxkvk_prev', fxkivki);
 
 end
