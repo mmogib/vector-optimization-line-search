@@ -1,54 +1,102 @@
 # VOP Line-Search — MATLAB Implementation
 
-This repository provides a unified MATLAB implementation of a line-search algorithm for Vector Optimization Problems (VOP). It consolidates legacy scripts into reusable directions, line-search strategies, and metrics with a clean layout.
+Unified MATLAB solver for line-search methods in Vector Optimization Problems (VOP). The codebase exposes pluggable search directions (SD, PRP+, HZ) and line-search strategies (Wolfe, quadratic Wolfe), plus utilities for metrics and performance profiles.
 
-## Structure
-- `src/core/` — Solver and shared utilities (`vop_solve.m`, `hz_subproblem.m`).
-- `src/directions/` — Search directions (`direction_hz.m`, `direction_prp.m`, `direction_sd.m`).
-- `src/linesearch/` — Line-search wrappers (Wolfe, qWolfe, Zoom variants).
-- `src/metrics/` — Metrics (hypervolume, purity, Gamma/Delta, Performance).
-- `problems/` — Problem wrappers (`f1/f2/f3.m`, `g1/g2/g3.m`).
-- `problems/data/` — All datasets (`.mat`) consolidated here.
-- `problems/registry.m` — Problem IDs, names, and default dimensions.
-- `experiments/` — Example runner scripts (e.g., `run_vop_demo.m`).
-  - `run_vop_demo.m` — single-config demo with metrics.
-  - `run_vop_sweep.m` — parameter sweep over directions/line-searches with metrics.
+## Algorithm Overview
+- Core loop: at iterate `x_k`, compute a descent direction `d_k` via a chosen direction rule, then perform a scalar line search to select step length `alpha_k` that satisfies Wolfe or quadratic Wolfe conditions for the multiobjective setting. Update `x_{k+1} = x_k + alpha_k d_k`.
+- Directions:
+  - `sd`: steepest descent of a weighted sum of gradients with adaptive scaling.
+  - `prp`: Polak–Ribière–Polyak variant with safeguards (beta capping / optional restart).
+  - `hz`: Hager–Zhang style direction using a small quadratic subproblem (m=2) with robust parameter updates.
+- Line-searches: unified wrappers for strong Wolfe (`dwolfe*`) and quadratic Wolfe (`qwolfe*`) with consistent inputs/outputs and safe option handling.
 
-## Quick Start
-1) Add paths (from anywhere):
-- `run('<path-to-repo>/setup.m')` or in-repo `setup`
-- Persist: `setup persist`
-2) Solve a 2-objective problem (recommended defaults sd + qwolfe):
-- `p = registry(); p = p(1);`
-- `problem = struct('x0',randn(p.n,1),'problemId',p.id,'m',p.m);`
-- `opts = struct('maxIter',200,'tol',1e-8);  % direction/linesearch default to sd+qwolfe`
-- `[x, F, info] = vop_solve(problem, opts);`
-3) Run the demo experiment:
-- `run('experiments/run_vop_demo.m')` (prints hypervolume, purity, gamma-delta)
-4) Run the sweep (optional):
-- `run('experiments/run_vop_sweep.m')`
+## Repository Layout
+- `src/core/` — solver and shared utilities (`vop_solve.m`, `hz_subproblem.m`, `problem_dispatcher.m`, `problem_glossary.m`).
+- `src/directions/` — `direction_hz.m`, `direction_prp.m`, `direction_sd.m`.
+- `src/linesearch/` — `linesearch_wolfe_d*.m`, `linesearch_qwolfe*.m`, `linesearch_dwolfe.m`.
+- `src/metrics/` — metrics and plotting utilities (hypervolume, purity, Gamma/Delta, performance profiles, CSV loader).
+- `problems/` — named problem wrappers and datasets in `problems/data/`; `problems/registry.m` lists available problems.
+- `experiments/` — ready-to-run scripts for demos, sweeps, profiles, and line-search comparisons.
+- `outputs/` — artifacts are git-ignored; only `.gitkeep` is tracked.
 
-## Recommended Defaults
-- A sweep across directions {hz, sd, prp} and line-searches {dwolfe1, dwolfe2, qwolfe} shows `sd + qwolfe` performs robustly across problems.
-- HZ with qwolfe can be strong on some problems (requires Optimization Toolbox).
-- Demo toggles baseline vs recommended via `useRecommended` at the top of `experiments/run_vop_demo.m`.
+## Setup
+- In MATLAB: `run('<repo>/setup.m')` or from repo root: `setup`
+- Persist paths across sessions: `setup persist`
 
-### Sample Demo Summary (sd + qwolfe)
+## List Available Problems
+- Quick glossary (with optional filter):
+  - `problem_glossary()`
+  - `problem_glossary({'IKK1','TE8'})`
+- Programmatic registry:
+  - `reg = registry();`  % array of structs: `name, n, m`
+
+## Solve One Problem (with options)
 ```
-pid=1 (P1): hv=0.4869, purity=1.0000, gamma-delta=14.26, avg-iters=1.00, runs=5
-pid=2 (P2): hv=0.2334, purity=1.0000, gamma-delta=8.406, avg-iters=1.20, runs=5
-pid=5 (P5): hv=0.5111, purity=1.0000, gamma-delta=0.6179, avg-iters=5.80, runs=5
-pid=6 (P6): hv=0.2708, purity=1.0000, gamma-delta=0.03246, avg-iters=2.80, runs=5
-pid=10 (P10): hv=0.3954, purity=1.0000, gamma-delta=4.916, avg-iters=4.80, runs=5
+setup
+reg = registry(); p = reg(1);               % pick a problem
+problem = struct('x0', randn(p.n,1), ...
+                 'name', p.name, ...        % preferred over numeric IDs
+                 'm', p.m);
+opts = struct('direction','sd', ...          % 'sd' | 'prp' | 'hz'
+              'linesearch','qwolfe', ...     % m=2: 'dwolfe1' | 'dwolfe2' | 'qwolfe'
+              'maxIter',200, ...
+              'tol',1e-8, ...
+              'recordIntermediateEvery',0, ...
+              'verbose',0);
+[x, F, info] = vop_solve(problem, opts);
+disp(F); disp(info.reason);
 ```
+Notes
+- Defaults (m=2): `direction='sd'`, `linesearch='qwolfe'`.
+- HZ requires Optimization Toolbox for the subproblem.
 
-## Notes
-- Evaluation uses the unified dispatcher via problem names (preferred) or legacy `problemId`:
-  - `Ffun(x)` returns an m×1 vector; `Gfun(x)` returns a 1×m cell of gradients.
-  - Legacy `f1/f2/f3` and `g1/g2/g3` have been removed. Use named problems (e.g., `IKK1`, `TE8`, `MOP5`) via `problem.name`.
-- HZ uses a quadratic subproblem for direction and an adaptive update integrated into the direction function.
-- Legacy `vector_optimization/*` scripts are deprecated and not used.
-- HZ requires Optimization Toolbox (`quadprog`).
+## Run Experiments on Multiple Problems
+- Inline performance profiles from fresh runs:
+  - `run('experiments/run_performance_profiles.m')`
+- Save results to CSV (versioned) then plot profiles:
+  - Optionally set a subset: `problems = {'IKK1','TE8','MOP5'};`
+  - `run('experiments/run_save_results.m')`  % writes `outputs/runs/results_vN.csv`
+  - `run('experiments/plot_profiles_from_csv.m')`  % saves figures to `outputs/performance/`
+- Compare line-searches with a fixed direction over random starts:
+  - `run('experiments/run_linesearch_compare.m')`  % writes CSV + performance plot
+
+## Extend: Add a New Problem
+1) Create two functions in `problems/`:
+   - `myprob_f.m`: returns `F(x)` as an `m×1` vector
+   - `myprob_g.m`: returns a `1×m` cell array of gradients `{g1(x),...,gm(x)}`
+   - Include a brief help header, domain notes, and reference.
+2) Register it in `problems/registry.m` with fields `name, n, m`.
+3) Map the name in `src/core/problem_dispatcher.m` if not auto-resolved by naming.
+
+## Extend: Add a New Line-Search
+1) Implement `src/linesearch/linesearch_<name>.m` with signature:
+   - `[alpha, info] = linesearch_<name>(~, ~, x, d, opts)`
+   - `info` may include `iters, nf, ng, reason`.
+2) Accept `opts` fields used elsewhere (`alphamax`, Wolfe constants, problem inputs via dispatcher).
+3) Wire it in `src/core/vop_solve.m` switch on `opts.linesearch`.
+4) Add a smoke test in `tests/` (optional; see docs/testing.md).
+
+## Extend: Add a New Direction
+1) Implement `src/directions/direction_<name>.m` with signature:
+   - `[d, state] = direction_<name>(x, gsum, history, opts)`
+   - For multiobjective methods that need `F/G` directly (e.g., HZ), pass via `opts` and follow the `direction_hz` pattern.
+2) Return `state` fields as needed (`iters, nf, ng, history`).
+3) Wire it in `src/core/vop_solve.m` switch on `opts.direction`.
+
+## Outputs and Logs
+- Results CSV and images are written under `outputs/` (git-ignored).
+- Long experiments print a single-line progress with percent, count, elapsed, ETA.
+
+## More Documentation
+- See `docs/` for focused guides:
+  - `docs/profiles_from_csv.md` — CSV → profiles walkthrough
+  - `docs/experiments.md` — demos, sweeps, line-search compare
+  - `docs/solver_options.md` — solver options and defaults
+  - `docs/problems.md` — registry/glossary and adding problems
 
 ## Contributing
-See `AGENTS.md` for guidelines, coding style, and the migration plan checklist.
+See `AGENTS.md` for coding style and the migration plan. Tests (if present) run with `runtests`.
+
+Note
+- Future work: add the VSD metric end-to-end (solver → CSV → loader/plots).
+
